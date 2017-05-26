@@ -1,0 +1,56 @@
+By default, Mapster will include public fields and properties, but we can change this behavior by `IncludeMember` and `IgnoreMember` method. The methods require predicate, and input types of predicate are:
+
+    public interface IMemberModel
+    {
+        Type Type { get; }
+        string Name { get; }
+        object Info { get; }
+        AccessModifier SetterModifier { get; }
+        AccessModifier AccessModifier { get; }
+        IEnumerable<object> GetCustomAttributes(bool inherit);
+    }
+
+    public enum MemberSide
+    {
+        Source,
+        Destination,
+    }
+
+### Not allow fields
+
+If you would like to allow only properties not public field to be mapped, you can check from `Info`. Possible values could be `PropertyInfo`, `FieldInfo`, or `ParameterInfo`. In this case, we will reject member of type `FieldInfo`.
+
+    TypeAdapterConfig.GlobalSettings.Default
+        .IgnoreMember((member, side) => member.Info is FieldInfo);
+
+### Allow only some list of types to be mapped
+
+Suppose you are working with EF, and you would like to skip all navigation properties. Then we will allow only short list of types.
+
+    TypeAdapterConfig.GlobalSettings.Default
+        .IgnoreMember((member, side) => !validTypes.Contains(member.Type));
+
+### Allow internal members
+
+If you would like to map members marked as internal, you can do it by:
+
+    TypeAdapterConfig.GlobalSettings.Default
+        .IncludeMember((member, side) => member.AccessModifier == AccessModifier.Internal 
+                                         || member.AccessModifier == AccessModifier.ProtectedInternal);
+
+### Allow only DataMember attribute
+
+If you would like to include all members decorated with DataMember attribute, and ignore all members with no DataMember attribute, you can set up by:
+
+    TypeAdapterConfig.GlobalSettings.Default
+        .IncludeMember((member, side) => member.GetCustomAttributes(true).OfType<DataMemberAttribute>().Any());
+    TypeAdapterConfig.GlobalSettings.Default
+        .IgnoreMember((member, side) => !member.GetCustomAttributes(true).OfType<DataMemberAttribute>().Any());
+
+### Allow non-public setters
+
+Mapster 3.0 required you to make explicit mapping in order to map to non-public setters. But you can override by:
+
+    TypeAdapterConfig.GlobalSettings.Default
+        .IncludeMember((member, side) => side == MemberSide.Destination
+                                         && member.SetterModifier != AccessModifier.None); //allow all except no setter
