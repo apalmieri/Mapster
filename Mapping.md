@@ -33,7 +33,7 @@ This includes mapping among lists, arrays, collections, dictionary including var
     var list = db.Pocos.ToList();
     var target = list.Adapt<IEnumerable<Dto>>();  
 
-### Object
+### Mappable Objects
 
 Mapster can map 2 different objects using the following rules
 - Source and destination property names are the same. Ex: `dest.Name = src.Name`
@@ -65,7 +65,7 @@ You can make custom mapping logic by
 - Ignoring members (https://github.com/chaowlert/Mapster/wiki/Ignoring-members)
 - Setting rule based mapping (https://github.com/chaowlert/Mapster/wiki/Rule-based-member-mapping)
 
-Object types are included:
+Mappable Object types are included:
 - POCO classes
 - POCO structs
 - Dictionary type implement IDictionary<string, T>
