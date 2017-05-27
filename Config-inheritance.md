@@ -11,7 +11,7 @@ A derived type of `SimplePoco` will automatically apply the base mapping config.
 
 If you don't wish a derived type to use the base mapping, you can turn off by `AllowImplicitSourceInheritance`
 
-    TypeAdapterConfig.GlobalSettings.AllowImplicitSourceInheritance = true;
+    TypeAdapterConfig.GlobalSettings.AllowImplicitSourceInheritance = false;
 
 And by default, Mapster will not inherit destination type mappings. You can turn on by `AllowImplicitDestinationInheritance`.
 
