@@ -25,3 +25,10 @@ You can control mapping to existing object logic by `MapToTargetWith`. For examp
                 .MapToTargetWith((src, dest) => Array.Copy(src, dest, src.Length));
 
 NOTE: if you set `MapWith` setting but no `MapToTargetWith` setting, Mapster will use logic from `MapWith` setting.
+
+### Custom actions after mapping
+
+You might not need to specify custom mapping logic completely. You can let Mapster do the mapping, and you do logic where Mapster cannot cover by using `AfterMapping`.
+
+    TypeAdapterConfig<Poco, Dto>.NewConfig()
+                .AfterMapping((src, dest) => SpecialSetFn(src, dest));
