@@ -8,7 +8,7 @@ This plugin allow you to perform step-into debugging!
 
 Then add following code on start up (or anywhere before mapping is compiled)
 
-    TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileFast();
+    TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileWithDebugInfo();
 
 Now on your mapping code.
 
