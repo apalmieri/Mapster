@@ -11,7 +11,7 @@ Then add following code on start up (or anywhere before mapping is compiled)
     var opt = new ExpressionCompilationOptions { IsRelease = !Debugger.IsAttached };
     TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileWithDebugInfo(opt);
 
-Now on your mapping code.
+Now on your mapping code (only in `DEBUG` mode).
 
     var dto = poco.Adapt<SimplePoco, SimpleDto>(); <--- you will step-into this function!!
 
