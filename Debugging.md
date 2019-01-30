@@ -8,7 +8,8 @@ This plugin allow you to perform step-into debugging!
 
 Then add following code on start up (or anywhere before mapping is compiled)
 
-    TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileWithDebugInfo();
+    var opt = new ExpressionCompilationOptions { IsRelease = !Debugger.IsAttached };
+    TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileWithDebugInfo(opt);
 
 Now on your mapping code.
 
@@ -33,7 +34,7 @@ var script = poco.BuildAdapter()
 ### Visual Studio for Mac
 To step-into debugging, you might need to emit file
 ```CSharp
-var opt = new ExpressionCompilationOptions { EmitFile = true };
+var opt = new ExpressionCompilationOptions { IsRelease = !Debugger.IsAttached, EmitFile = true };
 var func = lambda.CompileWithDebugInfo(opt);
 func(); //<-- you can step-into this function!!
 ```
