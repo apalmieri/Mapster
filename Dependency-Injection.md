@@ -26,7 +26,7 @@ You can get service by `MapContext.Current.GetService<>()`, for example
 
 ```csharp
 config.NewConfig<Poco, Dto>()
-    .Map(dest => dest.Name, src => MapContext.Current.GetService<INameFormatter>(src.Name));
+    .Map(dest => dest.Name, src => MapContext.Current.GetService<INameFormatter>().Format(src.Name));
 ```
 
 ##### Mapping
