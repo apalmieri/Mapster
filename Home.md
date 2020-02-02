@@ -109,12 +109,12 @@
 
 #### Plugins
 
-| Plugin | Method        | Description           | Link  |
-| ------ | ------------- |-----------------------| ----- |
-| Async | `setting.AfterMappingAsync` <br> `builder.AdaptToTypeAsync` | perform async operation on mapping | [async](https://github.com/MapsterMapper/Mapster/wiki/Async) |
-| Codegen | `builder.CreateMapExpression<DTO>().ToScript()` | generate mapping code | [codegen](https://github.com/MapsterMapper/Mapster/wiki/CodeGen), [debugging](https://github.com/MapsterMapper/Mapster/wiki/Debugging) |
-| Debugging | `config.Compiler = exp => exp.CompileWithDebugInfo()` | compile to allow step into debugging | [debugging](https://github.com/MapsterMapper/Mapster/wiki/Debugging) |
-| Dependency Injection | `MapContext.Current.GetService<IService>()` | Inject service into mapping logic | [injection](https://github.com/MapsterMapper/Mapster/wiki/Dependency-Injection) |
-| EF 6 & EF Core | `builder.EntityFromContext` | Copy data to tracked EF entity | [ef](https://github.com/MapsterMapper/Mapster/wiki/EF-6-&-EF-Core) |
-| FastExpressionCompiler | `config.Compiler = exp => exp.CompileFast()` | compile using FastExpressionCompiler | [fec](https://github.com/MapsterMapper/Mapster/wiki/FastExpressionCompiler) |
-| Json.net | `config.EnableJsonMapping()` | map json from/to poco and string | [json](https://github.com/MapsterMapper/Mapster/wiki/Json.net) |
+| Plugin | Method        | Description           |
+| ------ | ------------- |-----------------------|
+| [Async](https://github.com/MapsterMapper/Mapster/wiki/Async) | `setting.AfterMappingAsync` <br> `builder.AdaptToTypeAsync` | perform async operation on mapping |
+| [Codegen](https://github.com/MapsterMapper/Mapster/wiki/CodeGen) | `builder.CreateMapExpression<DTO>().ToScript()` | generate mapping code |
+| [Debugging](https://github.com/MapsterMapper/Mapster/wiki/Debugging) | `config.Compiler = exp => exp.CompileWithDebugInfo()` | compile to allow step into debugging |
+| [Dependency Injection](https://github.com/MapsterMapper/Mapster/wiki/Dependency-Injection) | `MapContext.Current.GetService<IService>()` | Inject service into mapping logic |
+| [EF 6 & EF Core](https://github.com/MapsterMapper/Mapster/wiki/EF-6-&-EF-Core) | `builder.EntityFromContext` | Copy data to tracked EF entity |
+| [FastExpressionCompiler](https://github.com/MapsterMapper/Mapster/wiki/FastExpressionCompiler) | `config.Compiler = exp => exp.CompileFast()` | compile using FastExpressionCompiler |
+| [Json.net](https://github.com/MapsterMapper/Mapster/wiki/Json.net) | `config.EnableJsonMapping()` | map json from/to poco and string |
