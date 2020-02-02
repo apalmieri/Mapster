@@ -32,8 +32,10 @@
 * [Inheritance](https://github.com/MapsterMapper/Mapster/wiki/Config-inheritance)
 
 ##### Plugins
+* [Async Support](https://github.com/MapsterMapper/Mapster/wiki/Async)
 * [Code Generation](https://github.com/MapsterMapper/Mapster/wiki/CodeGen)
 * [Debugging](https://github.com/MapsterMapper/Mapster/wiki/Debugging)
-* [EF6](https://github.com/MapsterMapper/Mapster/wiki/EF6)
+* [Dependency Injection](https://github.com/MapsterMapper/Mapster/wiki/DI)
+* [EF 6 & EF Core](https://github.com/MapsterMapper/Mapster/wiki/EF6)
 * [FastExpressionCompiler](https://github.com/MapsterMapper/Mapster/wiki/FastExpressionCompiler)
 * [Json.net](https://github.com/MapsterMapper/Mapster/wiki/Json.net)
