@@ -44,3 +44,61 @@ TypeAdapterConfig<TSource, TDestination>
 ```
 
 For more information about mapping non-public members, please see https://github.com/MapsterMapper/Mapster/wiki/Mapping-non-public-members.
+
+### Deep destination property
+
+`Map` can be defined to map deep destination property.
+
+```csharp
+TypeAdapterConfig<Poco, Dto>.NewConfig()
+    .Map(dest => dest.Child.Name, src => src.Name);
+```
+
+### Null propagation
+
+If `Map` contains only property path, null propagation will be applied.
+
+```csharp
+TypeAdapterConfig<Poco, Dto>.NewConfig()
+    .Map(dest => dest.Name, src => src.Child.Name);
+```
+
+From above example, if `src.Child` is null, mapping will return null instead of throw `NullPointerException`.
+
+### Multiple sources
+
+**Example 1**: Mapping Dto+SubDto to Poco
+
+```csharp
+public class SubDto
+{
+    public string Extras { get; set; }
+}
+public class Dto
+{
+    public string Name { get; set; }
+    public SubDto Details { get; set; }
+}
+public class Poco
+{
+    public string Name { get; set; }
+    public string Extras { get; set; }
+}
+```
+
+To configure Dto+SubDto to poco
+
+```csharp
+TypeAdapterConfig<Dto, Poco>.NewConfig()
+    .Map(dest => dest, src => src.Details);
+```
+
+**Example 2**: 2 different dto to poco
+
+You can use tuple to do this
+
+```csharp
+TypeAdapterConfig<(Dto1, Dto2), Poco>.NewConfig()
+    .Map(dest => dest, src => src.Item1)
+    .Map(dest => dest, src => src.Item2);
+```
