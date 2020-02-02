@@ -95,5 +95,3 @@ public class Order {
     public ICollection<OrderItem> Items { get; } = new List<OrderItem>();
 }
 ```
-
-See more detail at https://github.com/MapsterMapper/Mapster/wiki/Use-existing-value
