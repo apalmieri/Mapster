@@ -21,6 +21,7 @@
   * [Setting by attributes](https://github.com/MapsterMapper/Mapster/wiki/Setting-by-attributes)
   * [Ignoring members](https://github.com/MapsterMapper/Mapster/wiki/Ignoring-members)
   * [Rule-based member matching](https://github.com/MapsterMapper/Mapster/wiki/Rule-based-member-mapping)
+  * [Mapping readonly prop](https://github.com/MapsterMapper/Mapster/wiki/Mapping-readonly-prop)
   * [Mapping non-public members](https://github.com/MapsterMapper/Mapster/wiki/Mapping-non-public-members)
   * [Two ways & unflattening mapping](https://github.com/MapsterMapper/Mapster/wiki/Two-ways)
 * [Constructor mapping](https://github.com/MapsterMapper/Mapster/wiki/Constructor-mapping)
