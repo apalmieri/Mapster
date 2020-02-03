@@ -95,7 +95,7 @@ TypeAdapterConfig<Dto, Poco>.NewConfig()
 
 **Example 2**: Mapping 2 objects to poco
 
-In this example, you have `Dto1` and `Dto2`, and you would like to map both objects to a `Poco`. You can do this by wrap `Dto1` and `Dto2` into tuple. And then mapping `tuple.Item1` and `tuple.Item2` to `Poco`.
+In this example, you have `Dto1` and `Dto2`, and you would like to map both objects to a `Poco`. You can do this by wrapping `Dto1` and `Dto2` into a tuple. And then mapping `tuple.Item1` and `tuple.Item2` to `Poco`.
 
 ```csharp
 TypeAdapterConfig<(Dto1, Dto2), Poco>.NewConfig()
