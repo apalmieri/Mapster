@@ -14,13 +14,13 @@ While `Map` method specify logic for single property, `AddDestinationTransform` 
 **Trim string**
 ```csharp
 TypeAdapterConfig<TSource, TDestination>.NewConfig()
-        .AddDestinationTransforms((string x) => x.Trim());
+        .AddDestinationTransform((string x) => x.Trim());
 ```
 
 **Null replacement**
 ```csharp
 TypeAdapterConfig<TSource, TDestination>.NewConfig()
-        .AddDestinationTransforms((string x) => x ?? "");
+        .AddDestinationTransform((string x) => x ?? "");
 ```
 
 **Return empty collection if null**
