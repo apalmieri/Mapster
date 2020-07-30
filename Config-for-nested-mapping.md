@@ -1,10 +1,11 @@
-Configuration is per type pair, not per type hierarchy. For example if you have parent and child classes.
+For example if you have parent and child classes.
 
 ```csharp
 class ParentPoco
 {
     public string Id { get; set; }
     public List<ChildPoco> Children { get; set; }
+    public string Name { get; set; }
 }
 class ChildPoco
 {
@@ -24,7 +25,7 @@ TypeAdapterConfig<ParentPoco, ParentDto>.NewConfig()
     .PreserveReference(true);
 ```
 
-When mapping, child type will not get effect from `PreserveReference`. 
+By default, children types will not get effect from `PreserveReference`. 
 
 To do so, you must specify all type pairs inside `ParentPoco`.
 
@@ -43,10 +44,22 @@ Or you can set `PreserveReference` in global setting.
 TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
 ```
 
-If you don't want to set config in global setting, you can also use `Fork`.
+### Fork
+
+You can use `Fork` command to define config that applies only specified mapping down to nested mapping without polluting global setting.
 
 ```csharp
-var forked = TypeAdapterConfig.GlobalSettings.Fork(config => 
-    config.Default.PreserveReference(true));
-var parentDto = parentPoco.Adapt<ParentDto>(forked);
+TypeAdapterConfig<ParentPoco, ParentDto>.NewConfig()
+    .Fork(config => config.Default.PreserveReference(true));
+```
+
+**Ignore if string is null or empty**
+
+Another example, Mapster only can ignore null value ([IgnoreNullValues](https://github.com/MapsterMapper/Mapster/wiki/Shallow-merge#copy-vs-merge)), however, you use `Fork` to ignore null or empty.
+
+```csharp
+TypeAdapterConfig<ParentPoco, ParentDto>.NewConfig()
+    .Fork(config => config.ForType<string, string>()
+        .MapToTargetWith((src, dest) => string.IsNullOrEmpty(src) ? dest : src)
+    );
 ```
