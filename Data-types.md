@@ -72,7 +72,7 @@ Example for object to dictionary
 
 ```csharp
 var point = new { X = 2, Y = 3 };
-var dict = src.Adapt<Dictionary<string, int>>();
+var dict = point.Adapt<Dictionary<string, int>>();
 dict["Y"].ShouldBe(3);
 ```
 
