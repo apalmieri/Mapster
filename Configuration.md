@@ -57,7 +57,7 @@ TypeAdapterConfig.GlobalSettings.When((srcType, destType, mapType) => mapType ==
 
 ### Destination type only
 
-Setting also be able to done without knowing the source type, by using `ForDestinationType`. For example, you can do `AfterMapping` setting to validate after mapping.
+A setting can also be created without knowing the source type, by using `ForDestinationType`. For example, you can do `AfterMapping` setting to validate after mapping.
 
 ```csharp
 TypeAdapterConfig.GlobalSettings.ForDestinationType<IValidator>()
@@ -68,7 +68,7 @@ NOTE: `ForDestinationType` above will always apply to all types assignable to `I
 
 ### Open generics
 
-If mapping type is generic, you can create setting by passing generic type definition to `ForType`.
+If the mapping type is generic, you can create a setting by passing generic type definition to `ForType`.
 
 ```csharp
 TypeAdapterConfig.GlobalSettings.ForType(typeof(GenericPoco<>), typeof(GenericDto<>))
