@@ -50,8 +50,6 @@ var config = new TypeAdapterConfig();
 config.Compile();
 ```
 
-After compile, when you change setting in config, it will generate errors. Therefore, make sure you finish configuration before calling `Compile`. 
+Calling `Compile` method on start up helps you validate mapping and detect problem on start-up time, not on run-time.
 
-Calling `Compile` method on start up has following benefits.
-1. **Validate mapping**: as describe in previous section, `Compile` method helps you validate mapping. Calling on start up, help you detect problem on start-up time, not on run-time.
-2. **Prevent compilation error on runtime**: Mapster is thread-safe for `Adapt` method after compilation. But not before compilation. In some corner case, you might got compilation error when calling `Adapt` method concurrently with `TypeAdapterConfig` setup.
+NOTE: After compile, when you change setting in config, it will generate errors. Therefore, make sure you finish configuration before calling `Compile`. 
