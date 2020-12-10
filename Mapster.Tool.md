@@ -62,6 +62,19 @@ to clean up run following command:
 dotnet msbuild -t:CleanGenerated
 ```
 
+### Generate full type name
+
+If your POCOs and DTOs have the same name, you might need to generate using full type name, by add `-p` flag.
+```xml
+  <Target Name="Mapster">
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet build" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet tool restore" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster model -a $(TargetDir)$(ProjectName).dll -p" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster extension -a $(TargetDir)$(ProjectName).dll -p" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster mapper -a $(TargetDir)$(ProjectName).dll -p" />
+  </Target>
+```
+
 ### Generate models
 
 Annotate your class with `[AdaptFrom]`, `[AdaptTo]`, or `[AdaptTwoWays]`.
