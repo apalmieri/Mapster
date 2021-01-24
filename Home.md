@@ -126,6 +126,5 @@
 
 | Plugin | Tool          | Description           |
 | ------ | ------------- |-----------------------|
-| [Mapster.Tool](https://github.com/MapsterMapper/Mapster/wiki/Mapster.Tool) | `dotnet mapster` | generate DTOs and mapping codes (using attributes) |
-| [Fluent API](https://github.com/MapsterMapper/Mapster/wiki/Fluent-API-Code-generation) | `dotnet mapster` | generate DTOs and mapping codes (using fluent API) |
+| [Mapster.Tool](https://github.com/MapsterMapper/Mapster/wiki/Mapster.Tool) | `dotnet mapster` | generate DTOs and mapping codes on build |
 | [TextTemplate](https://github.com/MapsterMapper/Mapster/wiki/TextTemplate) | `t4` | generate mapping codes using t4 |
