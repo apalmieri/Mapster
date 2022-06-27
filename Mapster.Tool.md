@@ -26,13 +26,13 @@ Mapster.Tool provides 3 commands
 - **mapper**: generate mappers from interfaces
 
 And Mapster.Tool provides following options
-- -a: define input assembly
-- -b: specify base namespace for generating dynamic outputs & namespaces
-- -n: define namespace of generated classes
-- -o: define output directory
-- -p: print full type name (if your DTOs/POCOs having the same name)
-- -r: generate record types instead of POCO types
-
+- -a: Define input assembly
+- -b: Specify base namespace for generating dynamic outputs & namespaces
+- -n: Define namespace of generated classes
+- -o: Define output directory
+- -p: Print full type name (if your DTOs/POCOs having the same name)
+- -r: Generate record types instead of POCO types
+- -s: Skip generating existing files
 ### csproj integration
 
 #### Generate manually
