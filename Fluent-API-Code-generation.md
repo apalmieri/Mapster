@@ -24,7 +24,7 @@ Declare `AdaptFrom`, `AdaptTo`, or `AdaptTwoWays`.
 Example:
 ```csharp
 config.AdaptTo("[name]Dto")
-    ForType<Student>();
+    .ForType<Student>();
 ```
 
 Then Mapster will generate:
