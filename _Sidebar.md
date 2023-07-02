@@ -51,4 +51,3 @@
   * [Attributes](https://github.com/MapsterMapper/Mapster/wiki/Attribute-base-Code-generation)
   * [Interfaces](https://github.com/MapsterMapper/Mapster/wiki/Interface-base-Code-generation)
 * [TextTemplate](https://github.com/MapsterMapper/Mapster/wiki/TextTemplate)
-test
