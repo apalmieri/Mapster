@@ -20,6 +20,7 @@ namespace Mapster.Adapters
             var destinationMembers = classModel.Members;
             var unmappedDestinationMembers = new List<string>();
             var properties = new List<MemberMapping>();
+            arg.ConstructorMapping = ctorMapping;
 
             if (arg.Settings.IgnoreNonMapped == true)
                 IgnoreNonMapped(classModel,arg);
