@@ -54,7 +54,8 @@ namespace Mapster.Adapters
                     Destination = (ParameterExpression?)destination,
                     UseDestinationValue = arg.MapType != MapType.Projection && destinationMember.UseDestinationValue(arg),
                 };
-                if(getter == null && destinationMember.Info is PropertyInfo propinfo)
+                if(getter == null && !arg.DestinationType.IsRecordType()  
+                    && destinationMember.Info is PropertyInfo propinfo)
                 {
                     if (propinfo.GetCustomAttributes()
                         .Any(y => y.GetType() == typeof(System.Runtime.CompilerServices.RequiredMemberAttribute)))
