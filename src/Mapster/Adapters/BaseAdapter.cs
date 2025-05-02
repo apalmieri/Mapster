@@ -102,8 +102,7 @@ namespace Mapster.Adapters
                         arg.Context.Depth++;
                 }
 
-                if(arg.Settings.MapToTargetPrimitive == true 
-                  || arg.Settings.MapWithToPrimitive == true)
+                if(arg.Settings.MapToTargetPrimitive == true)
                 {
                     // skip inline mapping
                 }
@@ -116,7 +115,6 @@ namespace Mapster.Adapters
                             return exp.To(arg.DestinationType, true);
                     }
                 }
-                               
 
                 if (arg.Context.Running.Count > 1 && 
                     !arg.Context.Config.SelfContainedCodeGeneration &&

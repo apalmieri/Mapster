@@ -84,12 +84,6 @@ namespace Mapster
             set => Set(nameof(GenerateMapper), value);
         }
 
-        public bool? MapWithToPrimitive
-        {
-            get => Get(nameof(MapWithToPrimitive));
-            set => Set(nameof(MapWithToPrimitive), value);
-        }
-
         /// <summary>
         /// Not implemented
         /// </summary>
