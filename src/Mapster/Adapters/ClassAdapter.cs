@@ -191,7 +191,7 @@ namespace Mapster.Adapters
                 new[] { member.Destination, memberAsObject });
         }
 
-        protected override Expression? CreateInlineExpression(Expression source, CompileArgument arg)
+        protected override Expression? CreateInlineExpression(Expression source, CompileArgument arg, bool IsRequiredOnly = false)
         {
             //new TDestination {
             //  Prop1 = convert(src.Prop1),
@@ -202,8 +202,18 @@ namespace Mapster.Adapters
             var memberInit = exp as MemberInitExpression;
             var newInstance = memberInit?.NewExpression ?? (NewExpression)exp;
             var contructorMembers = newInstance.Arguments.OfType<MemberExpression>().Select(me => me.Member).ToArray();
-            var classModel = GetSetterModel(arg);
-            var classConverter = CreateClassConverter(source, classModel, arg);
+            ClassModel? classModel;
+            ClassMapping? classConverter;
+            if (IsRequiredOnly)
+            {
+                classModel = GetOnlyRequiredPropertySetterModel(arg);
+                classConverter = CreateClassConverter(source, classModel, arg, ctorMapping: true);
+            }
+            else
+            {
+                classModel = GetSetterModel(arg);
+                classConverter = CreateClassConverter(source, classModel, arg);
+            }
             var members = classConverter.Members;
 
             var lines = new List<MemberBinding>();

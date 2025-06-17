@@ -443,6 +443,25 @@ namespace Mapster.Tests
             resultID.UserID.ShouldBe("256");
         }
 
+        [TestMethod]
+        public void RequiredProperty()
+        {
+            var source = new Person553 { FirstMidName = "John", LastName = "Dow" };
+            var destination = new Person554 { ID = 245, FirstMidName = "Mary", LastName = "Dow" };
+
+            TypeAdapterConfig<Person553, Person554>.NewConfig()
+                //.Map(dest => dest.ID, source => 0)
+                .Ignore(x => x.ID);
+
+            var s = source.BuildAdapter().CreateMapToTargetExpression<Person554>();
+
+            var result = source.Adapt(destination);
+
+            result.ID.ShouldBe(245);
+            result.FirstMidName.ShouldBe(source.FirstMidName);
+            result.LastName.ShouldBe(source.LastName);
+        }
+
         #region NowNotWorking
 
         /// <summary>
@@ -497,6 +516,22 @@ namespace Mapster.Tests
     string CVV,
     int PaymentMethod
     );
+
+    public class Person553
+    {
+
+        public string LastName { get; set; }
+        public string FirstMidName { get; set; }
+    }
+
+    public class Person554
+    {
+        public required int ID { get; set; }
+        public string LastName { get; set; }
+        public string FirstMidName { get; set; }
+    }
+
+
     public class SourceFromTestUseDestValue
     {
         public int? A { get; set; }

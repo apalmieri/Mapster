@@ -232,7 +232,17 @@ namespace Mapster.Adapters
                 vars.Add(src);
                 transformedSource = src;
             }
-            var set = CreateInstantiationExpression(transformedSource, destination, arg);
+
+            Expression? set;
+            var requiremembers = arg.DestinationType.GetProperties()
+                .Where(x => x.GetCustomAttributes()
+                .Any(y => y.GetType() == typeof(System.Runtime.CompilerServices.RequiredMemberAttribute)));
+
+            if (requiremembers.Count() != 0)
+                set = CreateInlineExpression(source, arg, true);
+            else
+                set = CreateInstantiationExpression(transformedSource, destination, arg);
+
             if (destination != null && (UseTargetValue || arg.UseDestinationValue) && arg.GetConstructUsing()?.Parameters.Count != 2)
             {
                 if (destination.CanBeNull())
@@ -399,7 +409,8 @@ namespace Mapster.Adapters
         }
 
         protected abstract Expression CreateBlockExpression(Expression source, Expression destination, CompileArgument arg);
-        protected abstract Expression? CreateInlineExpression(Expression source, CompileArgument arg);
+        protected abstract Expression? CreateInlineExpression(Expression source, CompileArgument arg, bool IsRequiredOnly = false);
+
 
         protected Expression CreateInstantiationExpression(Expression source, CompileArgument arg)
         {

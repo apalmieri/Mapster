@@ -115,6 +115,16 @@ namespace Mapster.Adapters
                     Destination = (ParameterExpression?)destination,
                     UseDestinationValue = arg.MapType != MapType.Projection && destinationMember.UseDestinationValue(arg),
                 };
+                if(getter == null && !arg.DestinationType.IsRecordType()  
+                    && destinationMember.Info is PropertyInfo propinfo)
+                {
+                    if (propinfo.GetCustomAttributes()
+                        .Any(y => y.GetType() == typeof(System.Runtime.CompilerServices.RequiredMemberAttribute)))
+                    {
+                        getter = destinationMember.Type.CreateDefault();
+                    }
+                }
+
                 if (arg.MapType == MapType.MapToTarget && getter == null && arg.DestinationType.IsRecordType())
                 {
                     getter = TryRestoreRecordMember(destinationMember, recordRestorMemberModel, destination) ?? getter;
@@ -268,6 +278,17 @@ namespace Mapster.Adapters
             {
                 arg.Settings.Ignore.TryAdd(item.Name, new IgnoreDictionary.IgnoreItem());
             }
+        }
+
+        protected virtual ClassModel GetOnlyRequiredPropertySetterModel(CompileArgument arg)
+        {
+            return new ClassModel
+            {
+                Members = arg.DestinationType.GetFieldsAndProperties(true)
+                    .Where(x => x.GetType() == typeof(PropertyModel))
+                    .Where(y => ((PropertyInfo)y.Info).GetCustomAttributes()
+                    .Any(y => y.GetType() == typeof(System.Runtime.CompilerServices.RequiredMemberAttribute)))
+            };
         }
 
         protected Expression? TryRestoreRecordMember(IMemberModelEx member, ClassModel? restorRecordModel, Expression? destination)
