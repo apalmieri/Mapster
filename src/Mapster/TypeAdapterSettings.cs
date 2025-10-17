@@ -10,6 +10,16 @@ namespace Mapster
     [AdaptWith(AdaptDirectives.DestinationAsRecord)]
     public class TypeAdapterSettings : SettingStore
     {
+        public Type? SourceType 
+        {
+            get => Get<Type>(nameof(SourceType));
+            set => Set(nameof(SourceType), value);
+        }
+        public Type? DestinationType
+        {
+            get => Get<Type>(nameof(DestinationType));
+            set => Set(nameof(DestinationType), value);
+        }
         public IgnoreDictionary Ignore
         {
             get => Get(nameof(Ignore), () => new IgnoreDictionary());

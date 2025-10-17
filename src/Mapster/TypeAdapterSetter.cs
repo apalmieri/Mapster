@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Mapster.Adapters;
+using Mapster.Models;
+using Mapster.Utils;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Mapster.Adapters;
-using Mapster.Models;
-using Mapster.Utils;
 
 namespace Mapster
 {
@@ -273,8 +273,8 @@ namespace Mapster
         {
             setter.CheckCompiled();
 
-            Type baseSourceType = setter.Config.SourceType;
-            Type baseDestinationType = setter.Config.DestinationType;
+            Type baseSourceType = setter.Settings.SourceType ?? typeof(void);
+            Type baseDestinationType = setter.Settings.DestinationType ?? typeof(void);
 
             if (baseSourceType.IsOpenGenericType() && baseDestinationType.IsOpenGenericType())
             {
@@ -291,8 +291,7 @@ namespace Mapster
                 if (!baseDestinationType.GetTypeInfo().IsAssignableFrom(destType.GetTypeInfo()))
                     throw new InvalidCastException("In order to use inherits, TDestination must be inherited from TBaseDestination.");
             }
-
-
+        
             setter.Config.Rules.LockAdd(new TypeAdapterRule
             {
                 Priority = arg =>
@@ -310,8 +309,8 @@ namespace Mapster
         {
             setter.CheckCompiled();
                       
-            Type derivedSourceType = setter.Config.SourceType;
-            Type derivedDestinationType = setter.Config.DestinationType;
+            Type derivedSourceType = setter.Settings.SourceType ?? typeof(void);
+            Type derivedDestinationType = setter.Settings.DestinationType ?? typeof(void);
 
             if(baseSourceType.IsOpenGenericType() && baseDestinationType.IsOpenGenericType())
             {
