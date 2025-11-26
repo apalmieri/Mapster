@@ -276,7 +276,7 @@ namespace Mapster
         /// <returns>Adapted destination object of type TDestination.</returns>
         public static TDestination Adapt<TDestination>(this object? source, Action<TypeAdapterConfig> configAction)
         {
-            var config = new TypeAdapterConfig();
+            var config = TypeAdapterConfig.GlobalSettings.Clone();
             configAction(config);
             return source.Adapt<TDestination>(config);
         }
@@ -293,7 +293,7 @@ namespace Mapster
         /// <returns>Adapted destination object of type TDestination.</returns>
         public static TDestination Adapt<TSource, TDestination>(this object? source, Action<TypeAdapterSetter<TSource, TDestination>> configAction)
         {
-            var config = new TypeAdapterConfig();
+            var config = TypeAdapterConfig.GlobalSettings.Clone();
             var setter = config.NewConfig<TSource, TDestination>();
             configAction(setter);
             return source.Adapt<TDestination>(config);
