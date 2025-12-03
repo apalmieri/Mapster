@@ -8,7 +8,7 @@ uid: Mapster.Tools.TextTemplate
     PM> Install-Package ExpressionTranslator
 ```
 
-Although Mapster allow you to [step-into debugging](xref:Mapster.Plugins.Debugging), but all mapping are generated at runtime. Therefore, error will be captured at runtime, and we also lose the power of static analysis to find the usage.
+Although Mapster allow you to [step-into debugging](xref:Mapster.Packages.Diagnostics), but all mapping are generated at runtime. Therefore, error will be captured at runtime, and we also lose the power of static analysis to find the usage.
 
 Here are steps to add code generation.
 

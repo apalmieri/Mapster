@@ -5,7 +5,7 @@
   href: Async.md
 - name: "Debugging & Diagnostics Support"
   uid: Mapster.Packages.Diagnostics
-  href: Debugging.md
+  href: Diagnostics.md
 - name: Dependency Injection
   uid: Mapster.Packages.DependencyInjection
   href: Dependency-Injection.md

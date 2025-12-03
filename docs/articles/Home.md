@@ -112,19 +112,19 @@
 | `[AdaptIgnore(side)]` | Ignore property from mapping | [attribute](xref:Mapster.Settings.Custom.Attributes) |
 | `[UseDestinationValue]` | Use existing property object to map data | [attribute](xref:Mapster.Settings.Custom.Attributes) |
 | `[AdaptTo]` `[AdaptFrom]` `[AdaptTwoWays]` | Add setting on POCO class | [location](xref:Mapster.Configuration.Location#attributes) |
-| `[Mapper]` `[GenerateMapper]` `[PropertyType]` | Define setting for code generation | [Mapster.Tool](xref:Mapster.Tools.MapsterTool) |
+| `[Mapper]` `[GenerateMapper]` `[PropertyType]` | Define setting for code generation | [Mapster.Tool](xref:Mapster.Tools.MapsterTool.Overview) |
 
 #### Plugins
 
 | Plugin | Method        | Description           |
 | ------ | ------------- |-----------------------|
-| [Async](xref:Mapster.Plugins.Async) | `setting.AfterMappingAsync` <br> `builder.AdaptToTypeAsync` | perform async operation on mapping |
-| [Debugging](xref:Mapster.Plugins.Debugging) | `config.Compiler = exp => exp.CompileWithDebugInfo()` | compile to allow step into debugging |
-| [Dependency Injection](xref:Mapster.Plugins.DependencyInjection) | `MapContext.Current.GetService<IService>()` | Inject service into mapping logic |
-| [EF 6 & EF Core](xref:Mapster.Plugins.EntityFramework) | `builder.EntityFromContext` | Copy data to tracked EF entity |
-| [FEC](xref:Mapster.Plugins.FastExpressionCompiler) | `config.Compiler = exp => exp.CompileFast()` | compile using FastExpressionCompiler |
-| [Immutable](xref:Mapster.Plugins.Immutable) | `config.EnableImmutableMapping()` | mapping to immutable collection |
-| [Json.net](xref:Mapster.Plugins.JsonNet) | `config.EnableJsonMapping()` | map json from/to poco and string |
+| [Async](xref:Mapster.Packages.Async) | `setting.AfterMappingAsync` <br> `builder.AdaptToTypeAsync` | perform async operation on mapping |
+| [Debugging](xref:Mapster.Packages.Diagnostics) | `config.Compiler = exp => exp.CompileWithDebugInfo()` | compile to allow step into debugging |
+| [Dependency Injection](xref:Mapster.Packages.DependencyInjection) | `MapContext.Current.GetService<IService>()` | Inject service into mapping logic |
+| [EF 6 & EF Core](xref:Mapster.Packages.EntityFramework) | `builder.EntityFromContext` | Copy data to tracked EF entity |
+| [FEC](xref:Mapster.Packages.FastExpressionCompiler) | `config.Compiler = exp => exp.CompileFast()` | compile using FastExpressionCompiler |
+| [Immutable](xref:Mapster.Packages.Immutable) | `config.EnableImmutableMapping()` | mapping to immutable collection |
+| [Json.net](xref:Mapster.Packages.JsonNet) | `config.EnableJsonMapping()` | map json from/to poco and string |
 
 #### Code Generation Tools
 

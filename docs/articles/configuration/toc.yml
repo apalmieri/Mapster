@@ -14,7 +14,7 @@
   href: Config-location.md
 - name: Config validation & compilation
   uid: Mapster.Configuration.ValidationAndCompilation
-  href: Config-validation-&-compilation.md
+  href: Config-validation-and-compilation.md
 - name: Config for nested mapping
   uid: Mapster.Configuration.NestedMapping
   href: Config-for-nested-mapping.md

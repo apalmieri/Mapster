@@ -5,15 +5,14 @@
       "src": [
         {
           "files": [
-            // "**/DevTKSS.Extensions.Uno.Extensions.csproj",
-            // "**/DevTKSS.Uno.Samples.MvuxGallery.csproj"
+            "../src/Mapster/Mapster.sln"
           ],
           "src": "../src"
         }
       ],
       "includeExplicitInterfaceImplementations": false,
       "disableDefaultFilter": false,
-      "filter": "config/filterConfig.yml",
+     // "filter": "config/filterConfig.yml",
       "properties": {
         "TargetFramework" : "net9.0"
       },
@@ -57,19 +56,15 @@
           "articles/**.{md,yml}",
           "toc.yml",
           "index.md",
-          "../README.md"
+          "README.md"
         ],
-        "src": "articles",
-        "dest": "docs",
         "exclude": [
           "**/.include/**"
         ]
       },
       {
         "rootTocPath": "releases",
-        "files":["../releases/**.{md}"],
-        "src": "../releases",
-        "dest": "releases"
+        "files":["releases/**.{md}"]
       }
     ],
     "resource": [

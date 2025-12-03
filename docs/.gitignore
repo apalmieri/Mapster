@@ -1,2 +1,2 @@
 _site/*
-!docs/articles/packages/**.md
+!docs/articles/**.{md,yml}
