@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Tools.MapsterTool.FluentAPI
+title: Mapster Tool
 ---
 
-### Configuration class
+## Configuration class
 
 Create a configuration class implement `ICodeGenerationRegister`.
 
@@ -21,26 +22,29 @@ public class MyRegister : ICodeGenerationRegister
 }
 ```
 
-### Generate models
+## Generate models
 
 Declare `AdaptFrom`, `AdaptTo`, or `AdaptTwoWays`.
 
 Example:
+
 ```csharp
 config.AdaptTo("[name]Dto")
     .ForType<Student>();
 ```
 
 Then Mapster will generate:
+
 ```csharp
 public class StudentDto {
     ...
 }
 ```
 
-#### Add types to generate
+### Add types to generate
 
-You can add types by `ForTypes`, `ForAllTypesInNamespace`, `ForType<>`, and you can remove added types using `ExcludeTypes`.
+You can add types by `ForTypes`, `ForAllTypesInNamespace`, `ForType<>`, and you can remove added types using `ExcludeTypes`:
+
 ```csharp
 config.AdaptTo("[name]Dto")
     .ForAllTypesInNamespace(Assembly.GetExecutingAssembly(), "Sample.CodeGen.Domains")
@@ -48,12 +52,12 @@ config.AdaptTo("[name]Dto")
     .ExcludeTypes(type => type.IsEnum)
 ```
 
-
-#### Ignore some properties on generation
+### Ignore some properties on generation
 
 By default, code generation will ignore properties that annotated `[AdaptIgnore]` attribute. But you can add more settings which include `IgnoreAttributes`, `IgnoreNoAttributes`, `IgnoreNamespaces`.
 
 Example:
+
 ```csharp
 config.AdaptTo("[name]Dto")
     .ForType<Student>()
@@ -66,7 +70,7 @@ public class Student {
 }
 ```
 
-#### Ignore a property
+### Ignore a property
 
 ```csharp
 config.AdaptTo("[name]Dto")
@@ -75,7 +79,7 @@ config.AdaptTo("[name]Dto")
     });
 ```
 
-#### Change a property name, type
+### Change a property name, type
 
 ```csharp
 config.AdaptTo("[name]Dto")
@@ -85,7 +89,7 @@ config.AdaptTo("[name]Dto")
     });
 ```
 
-#### Forward property types
+### Forward property types
 
 By default, code generation will forward type on the same declaration. (For example, `Student` has `ICollection<Enrollment>`, after code generation `StudentDto` will has `ICollection<EnrollmentDto>`).
 
@@ -97,11 +101,12 @@ config.AdaptTo("[name]Dto")
     .AlterType<Student, Person>();    //forward all Student to Person
 ```
 
-#### Generate readonly properties
+### Generate readonly properties
 
 For `AdaptTo` and `AdaptTwoWays`, you can generate readonly properties with `MapToConstructor` setting.
 
 For example:
+
 ```csharp
 config.AdaptTo("[name]Dto")
     .ForType<Student>()
@@ -109,6 +114,7 @@ config.AdaptTo("[name]Dto")
 ```
 
 This will generate:
+
 ```csharp
 public class StudentDto {
     public string Name { get; }
@@ -119,11 +125,12 @@ public class StudentDto {
 }
 ```
 
-#### Generate nullable properties
+### Generate nullable properties
 
 For `AdaptFrom`, you can generate nullable properties with `IgnoreNullValues` setting.
 
 For example:
+
 ```csharp
 config.AdaptFrom("[name]Merge")
     .ForType<Student>()
@@ -131,18 +138,21 @@ config.AdaptFrom("[name]Merge")
 ```
 
 This will generate:
+
 ```csharp
 public class StudentMerge {
     public int? Age { get; set; }
 }
 ```
 
-### Generate extension methods
+## Generate extension methods
 
-#### Generate using `GenerateMapper`.
+### Generate using `GenerateMapper`
+
 For any POCOs declared with `AdaptFrom`, `AdaptTo`, or `AdaptTwoWays`, you can declare `GenerateMapper` in order to generate extension methods.
 
 Example:
+
 ```csharp
 config.AdaptTo("[name]Dto")
     .ForType<Student>();
@@ -152,6 +162,7 @@ config.GenerateMapper("[name]Mapper")
 ```
 
 Then Mapster will generate:
+
 ```csharp
 public class StudentDto {
     ...

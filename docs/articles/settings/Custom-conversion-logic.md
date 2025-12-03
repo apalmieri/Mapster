@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Settings.CustomConversionLogic
+title: "Settings - Custom conversion logic"
 ---
 
-### Custom type conversion
+## Custom type conversion
 
 In some cases, you may want to have complete control over how an object is mapped. You can register specific transformations using the `MapWith` method.
 
@@ -27,7 +28,7 @@ TypeAdapterConfig<ComplexPoco, ComplexDto>.NewConfig()
     .MapWith(poco => poco.ToDto(), applySettings: true);
 ```
 
-### Custom mapping data to existing object
+## Custom mapping data to existing object
 
 You can control mapping to existing object logic by `MapToTargetWith`. For example, you can copy data to existing array.
 

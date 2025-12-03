@@ -1,14 +1,17 @@
 ---
-uid: Mapster.Plugins.DependencyInjection
+uid: Mapster.Packages.DependencyInjection
+title: "Packages - Dependency Injection Support"
 ---
 
-### Dependency injection support
+## Installation
 
+This package allows you to inject service into mapping configuration.
+
+```nuget
     PM> Install-Package Mapster.DependencyInjection
+```
 
-This plugin allows you to inject service into mapping configuration.
-
-#### Usage
+## Usage
 
 On startup, register `TypeAdapterConfig`, and `ServiceMapper`.
 
@@ -27,7 +30,7 @@ public void ConfigureServices(IServiceCollection services)
 
 NOTE: lifetime of `ServiceMapper` is up to services you would like to inject. It can be singleton, if you inject only singleton services. Or it can be transient, if any injected services is transient.
 
-##### Mapping configuration
+## Mapping configuration
 
 You can get service by `MapContext.Current.GetService<>()`, for example
 
@@ -36,7 +39,7 @@ config.NewConfig<Poco, Dto>()
     .Map(dest => dest.Name, src => MapContext.Current.GetService<INameFormatter>().Format(src.Name));
 ```
 
-##### Mapping
+## Mapping
 
 If you setup service injection, you need to use mapper instance to map object.
 

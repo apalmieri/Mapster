@@ -1,15 +1,17 @@
 ---
-uid: Mapster.Plugins.JsonNet
+uid: Mapster.Packages.JsonNet
+title: "Packages - Json.net Support"
 ---
 
-# Mapster.JsonNet
-Json.net conversion supports
+The `Json.net` Package adds conversion supports for Json.Net types.
 
-### Install
+## Installation
 
+```nuget
     PM> Install-Package Mapster.JsonNet
-    
-### Usage
+```
+
+## Usage
 
 Call `EnableJsonMapping` from your `TypeAdapterConfig` to enable Json.Net mapping.
 
@@ -17,13 +19,13 @@ Call `EnableJsonMapping` from your `TypeAdapterConfig` to enable Json.Net mappin
 TypeAdapterConfig.GlobalSettings.EnableJsonMapping();
 ```
 
-or 
+or:
 
 ```csharp
 config.EnableJsonMapping();
 ```
-    
-This will allow
+
+This will allow:
 
 - Mapping between Json.Net types (`JToken`, `JArray`, `JObject`) from/to POCO types
 - Serialize and deserialize Json.Net types from/to string

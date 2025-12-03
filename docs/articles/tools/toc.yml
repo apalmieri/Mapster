@@ -1,17 +1,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dotnet/docfx/main/schemas/toc.schema.json
-- name: Mapster.Tool
-  uid: Mapster.Tools.MapsterTool
-  href: Mapster.Tool.md
-  items:
-    - name: Fluent API
-      uid: Mapster.Tools.MapsterTool.FluentAPI
-      href: mapster-tool/Fluent-API-Code-generation.md
-    - name: Attributes
-      uid: Mapster.Tools.MapsterTool.Attributes
-      href: mapster-tool/Attribute-base-Code-generation.md
-    - name: Interfaces
-      uid: Mapster.Tools.MapsterTool.Interfaces
-      href: mapster-tool/Interface-base-Code-generation.md
-- name: TextTemplate
+# TODO: Decide if we want Tools to have a topicHref
+items:
+- name: Mapster Tool
+  topicHref: xref:Mapster.Tools.MapsterTool.Overview
+  href: mapster-tool/toc.yml
+- name: Text Template
   uid: Mapster.Tools.TextTemplate
   href: TextTemplate.md

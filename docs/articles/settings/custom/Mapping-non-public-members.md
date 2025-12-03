@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Settings.Custom.NonPublicMembers
+title: "Settings - Mapping non-public members"
 ---
 
-### EnableNonPublicMembers
+## `EnableNonPublicMembers` Extension Method
 
 This will allow Mapster to set to all non-public members.
 
@@ -14,12 +15,12 @@ TypeAdapterConfig<Poco, Dto>.NewConfig().EnableNonPublicMembers(true);
 TypeAdapterConfig.GlobalSettings.Default.EnableNonPublicMembers(true);
 ```
 
-### AdaptMember attribute
+## `AdaptMember` attribute
 
 You can also map non-public members with `AdaptMember` attribute.
 
 ```csharp
-public class Product 
+public class Product
 {
     [AdaptMember]
     private string HiddenId { get; set; }
@@ -27,9 +28,9 @@ public class Product
 }
 ```
 
-### Map
+## `Map`
 
-`Map` command can map to private member by specify name of the members.
+The `Map` extension can map to private member by specify name of the members.
 
 ```csharp
 TypeAdapterConfig<TSource, TDestination>
@@ -37,13 +38,13 @@ TypeAdapterConfig<TSource, TDestination>
     .Map("PrivateDestName", "PrivateSrcName");
 ```
 
-### IncludeMember
+## `IncludeMember`
 
-With `IncludeMember`, you can select which access modifier to allow.
+With the `IncludeMember` extension, you can select which access modifier to allow.
 
 ```csharp
 TypeAdapterConfig.GlobalSettings.Default
-    .IncludeMember((member, side) => member.AccessModifier == AccessModifier.Internal 
+    .IncludeMember((member, side) => member.AccessModifier == AccessModifier.Internal
                                      || member.AccessModifier == AccessModifier.ProtectedInternal);
 ```
 

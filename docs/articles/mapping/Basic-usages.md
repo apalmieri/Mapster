@@ -1,8 +1,10 @@
 ---
 uid: Mapster.Mapping.BasicUsages
+title: "Mapping - Basic Usages"
 ---
 
-### Mapping to a new object
+## Mapping to a new object
+
 Mapster creates the destination object and maps values to it.
 
 ```csharp
@@ -17,11 +19,11 @@ You make the object, Mapster maps to the object.
 sourceObject.Adapt(destObject);
 ```
 
-### Queryable Extensions
+## Queryable Extensions
 
 Mapster also provides extensions to map queryables.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > Avoid calling ProjectToType() before materializing queries from Entity Framework. This is known to cause issues. Instead, call ToList() or ToListAsync() before calling ProjectToType.
 
 ```csharp

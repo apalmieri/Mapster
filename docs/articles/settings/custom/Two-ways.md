@@ -1,8 +1,7 @@
 ---
 uid: Mapster.Settings.Custom.TwoWaysMapping
+title: "Settings - Two-ways mapping"
 ---
-
-### 2-ways mapping
 
 If you need to map object from POCO to DTO, and map back from DTO to POCO. You can define the setting once by using `TwoWays`.
 
@@ -23,7 +22,7 @@ TypeAdapterConfig<Poco, Dto>
     .Map(dto => dto.Foz, poco => poco.Baz); //<-- this map will apply both side
 ```
 
-### Unflattening
+## Flattening
 
 By default, Mapster will perform flattening.
 
@@ -39,18 +38,20 @@ struct StaffDto {
 }
 ```
 
-Above example, without any setup, you can map from POCO to DTO and you will get `SupervisorName` from `Supervisor.Name` (flattening).
+Above example, without any setup, you can map from POCO to DTO and you will get `SupervisorName` from `Supervisor.Name`.
 
-However, unflattening process needed to be defined. You can map to `Supervisor.Name` from `SupervisorName` by 
+## Using `Unflattening`
 
-#### using `Unflattening`.
+However, unflattening process needed to be defined. You can map to `Supervisor.Name` from `SupervisorName` by `Unflattening` setting.
 
 ```csharp
 TypeAdapterConfig<StaffDto, Staff>.NewConfig()
     .Unflattening(true);
 ```
 
-#### using `TwoWays`
+## Using `TwoWays`
+
+Or you can use `TwoWays` to define both flattening and unflattening in one setting.
 
 ```csharp
 TypeAdapterConfig<Staff, StaffDto>

@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Settings.Custom.Attributes
+title: "Settings - Setting by attributes"
 ---
 
-### AdaptIgnore attribute
+## `AdaptIgnore` attribute
 
 When a property decorated with `[AdaptIgnore]`, that property will be excluded from Mapping. For example, if we would like to exclude price to be mapped.
 
@@ -30,7 +31,7 @@ public class Product {
 
 Above example, `Price` will be ignored only when `Product` is used as source.
 
-### Ignore custom attributes
+## `IgnoreAttribute` usage
 
 You can ignore members annotated with any attributes by using the `IgnoreAttribute` method.
 
@@ -45,8 +46,12 @@ However `IgnoreAttribute` will ignore both source and destination. If you would 
 config.IgnoreMember((member, side) => member.HasCustomAttribute(typeof(NotMapAttribute)) && side == MemberSide.Source);
 ```
 
-### AdaptMember attribute
-**Map to different name**  
+## `AdaptMember` attribute
+
+`AdaptMember` attribute allows you to customize member mapping by attributes.
+
+### Map to different name
+
 With `AdaptMember` attribute, you can specify name of source or target to be mapped. For example, if we would like to map `Id` to `Code`.
 
 ```csharp
@@ -57,8 +62,10 @@ public class Product {
 }
 ```
 
-**Map to non-public members**  
-You can also map non-public members with `AdaptMember` attribute.
+### Map to non-public members
+
+By default, Mapster only map public members. You can enable mapping to non-public members by `AdaptMember` attribute:
+
 ```csharp
 public class Product {
     [AdaptMember]
@@ -78,7 +85,7 @@ TypeAdapterConfig.GlobalSettings.Default
                                     .FirstOrDefault()?.PropertyName);  //if return null, property will not be renamed
 ```
 
-### Include custom attributes
+### Using `IncludeAttribute`
 
 And if we would like to include non-public members decorated with `JsonProperty` attribute, we can do it by `IncludeAttribute`.
 
@@ -87,7 +94,7 @@ TypeAdapterConfig.GlobalSettings.Default
     .IncludeAttribute(typeof(JsonPropertyAttribute));
 ```
 
-### Use destination value
+### Using the `UseDestinationValue` attribute
 
 You can tell Mapster to use existing property object to map data rather than create new object.
 

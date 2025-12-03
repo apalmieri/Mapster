@@ -1,26 +1,35 @@
 ---
-uid: Mapster.Plugins.EntityFramework
+uid: Mapster.Packages.EntityFramework
+title: "Packages - EF 6 and EF Core Support"
 ---
 
-### EF 6 & EF Core support
+## [EntityFramework 6 support](#tab/ef6)
 
-For EF 6
+To install the package for EF 6:
 
+```nuget
     PM> Install-Package Mapster.EF6
+```
 
-For EF Core
+## [EntityFramework Core support](#tab/efcore)
 
+To install the package for EF Core:
+
+```nuget
     PM> Install-Package Mapster.EFCore
+```
 
-In EF, objects are tracked, when you copy data from dto to entity containing navigation properties, this plugin will help finding entity object in navigation properties automatically.
+In EF, objects are tracked, when you copy data from dto to entity containing navigation properties, this package will help finding entity object in navigation properties automatically.
 
-#### Mapster.EFCore & EFCore compatiability
+---
+
+## Compatibility
+
 - use Mapster.EFCore version 5.x for EFCore 5.x
 - use Mapster.EFCore version 3.x for EFCore 3.x
 - use Mapster.EFCore version 1.x for EFCore 2.x
 
-
-#### Usage
+## Usage
 
 Use `EntityFromContext` method to define data context.
 
@@ -41,8 +50,9 @@ _mapper.From(dto)
     .AdaptTo(poco);
 ```
 
-#### EF Core ProjectToType
-`Mapster.EFCore` also allows `ProjectToType` from mapper instance.
+### EF Core `ProjectToType`
+
+`Mapster.EFCore` also allows you to perform projection from `IQueryable` source via mapper instance and `ProjectToType` directly to your DTO type.
 
 ```csharp
 var query = db.Customers.Where(...);

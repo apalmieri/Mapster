@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Settings.BeforeAfterMapping
+title: "Settings - Before and After mapping"
 ---
 
-### Before mapping action
+## Before mapping action
 
 You can perform actions before mapping started by using `BeforeMapping` method.
 
@@ -11,7 +12,7 @@ TypeAdapterConfig<Foo, Bar>.ForType()
     .BeforeMapping((src, result) => result.Initialize());
 ```
 
-### After mapping action
+## After mapping action
 
 You can perform actions after each mapping by using `AfterMapping` method. For instance, you might would like to validate object after each mapping.
 
@@ -26,11 +27,12 @@ Or you can set for all mappings to types which implemented a specific interface 
 TypeAdapterConfig.GlobalSettings.ForDestinationType<IValidatable>()
     .AfterMapping(result => result.Validate());
 ```
-### Before & after mapping in code generation
+
+## Code generation
 
 `BeforeMapping` and `AfterMapping` accept action which allowed you to pass multiple statements. In code generation, you might need to pass expression instead of action using `BeforeMappingInline` and `AfterMappingInline`, expression can be translated into code, but action cannot.
 
-#### Single line statement
+### Single line statement
 
 For single line statement, you can directly change from `BeforeMapping` and `AfterMapping` to `BeforeMappingInline` and `AfterMappingInline`.
 
@@ -39,7 +41,7 @@ TypeAdapterConfig.GlobalSettings.ForDestinationType<IValidatable>()
     .AfterMappingInline(result => result.Validate());
 ```
 
-#### Multiple statements
+### Multiple statements
 
 For multiple statements, you need to declare a method for actions.
 
@@ -58,7 +60,7 @@ TypeAdapterConfig.GlobalSettings.ForDestinationType<IValidatable>()
     .AfterMappingInline(result => PocoToDtoMapper.Validate(result));
 ```
 
-### Before and After mapping have overloads with `destination` parameter
+## Overloads with `destination` parameter
 
 You can use `BeforeMapping` with `destination` to construct final (`result`) object.
 

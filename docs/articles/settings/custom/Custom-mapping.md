@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Settings.Custom.Mapping
+title: "Settings - Custom Mapping"
 ---
 
-### Custom member mapping
+## Custom member mapping
 
 You can customize how Mapster maps values to a property.
 
@@ -35,7 +36,7 @@ TypeAdapterConfig<TSource, TDestination>
     .Map(dest => dest.FullName, src => "Mr. " + src.FullName);
 ```
 
-NOTE: if you would like to skip mapping, when condition is met, you can use `IgnoreIf` (https://github.com/MapsterMapper/Mapster/wiki/Ignoring-members#ignore-conditionally).
+NOTE: if you would like to skip mapping, when condition is met, you can use `IgnoreIf` (xref:Mapster.Settings.Custom.IgnoringMembers#ignore-conditionally).
 
 ### Mapping to non-public members
 
@@ -47,7 +48,7 @@ TypeAdapterConfig<TSource, TDestination>
     .Map("PrivateDestName", "PrivateSrcName");
 ```
 
-For more information about mapping non-public members, please see https://github.com/MapsterMapper/Mapster/wiki/Mapping-non-public-members.
+For more information about mapping non-public members, please see [Mapping non-public members](xref:Mapster.Settings.Custom.NonPublicMembers).
 
 ### Deep destination property
 

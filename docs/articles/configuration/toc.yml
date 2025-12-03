@@ -1,12 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dotnet/docfx/main/schemas/toc.schema.json
 # Side navigation for Configuration articles
-- name: Configuration
+- name: Configuration Overview
   uid: Mapster.Configuration.Overview
   href: Configuration.md
 - name: Config inheritance
   uid: Mapster.Configuration.Inheritance
   href: Config-inheritance.md
-- name: Config instance
+- name: Config Instance
   uid: Mapster.Configuration.Instance
   href: Config-instance.md
 - name: Config location

@@ -1,13 +1,15 @@
 ---
 uid: Mapster.Settings.ConstructorMapping
+title: "Settings - Constructor mapping"
 ---
 
-### Custom Destination Object Creation
+## Custom Destination Object Creation
 
 You can provide a function call to create your destination objects instead of using the default object creation
 (which expects an empty constructor). To do so, use the `ConstructUsing` method when configuring.  This method expects
 a function that will provide the destination instance. You can call your own constructor, a factory method,
 or anything else that provides an object of the expected type.
+
 ```csharp
 //Example using a non-default constructor
 TypeAdapterConfig<TSource, TDestination>.NewConfig()
@@ -47,6 +49,7 @@ class Dto {
     }
 }
 ```
+
 ```csharp
 TypeAdapterConfig<Poco, Dto>.NewConfig()
     .MapToConstructor(true)
@@ -66,6 +69,7 @@ class Dto {
     public Dto(int foo, int bar, int baz) { ... }
 }
 ```
+
 Or you can also explicitly pass ConstructorInfo to the method.
 
 ```csharp

@@ -1,46 +1,58 @@
 ---
-uid: Mapster.Tools.MapsterTool
+uid: Mapster.Tools.MapsterTool.Overview
 ---
 
-## Mapster.Tool
+# Mapster Tool Overview
 
-### Install Mapster.Tool
+The Mapster.Tool is a command-line tool that helps you generate DTOs (Data Transfer Objects) and mapping code based on your domain models or interfaces. It supports various generation strategies, including Fluent API configuration, attribute-based annotations, and interface-based definitions.
+
+## Install Mapster.Tool
+
 ```bash
 #skip this step if you already have dotnet-tools.json
-dotnet new tool-manifest 
+dotnet new tool-manifest
 
 dotnet tool install Mapster.Tool
 ```
 
-### Install Mapster
+## Install Mapster
+
 For lightweight dependency, you can just install `Mapster.Core`.
-```
+
+```nuget
 PM> Install-Package Mapster.Core
 ```
 
 However, if you need `TypeAdapterConfig` for advance configuration, you still need `Mapster`.
-```
+
+```nuget
 PM> Install-Package Mapster
 ```
 
-### Commands
-Mapster.Tool provides 3 commands
+## Commands
+
+Mapster.Tool provides 3 commands:
+
 - **model**: generate models from entities
 - **extension**: generate extension methods from entities
 - **mapper**: generate mappers from interfaces
 
 And Mapster.Tool provides following options
-- -a: Define input assembly
-- -b: Specify base namespace for generating dynamic outputs & namespaces
-- -n: Define namespace of generated classes
-- -o: Define output directory
-- -p: Print full type name (if your DTOs/POCOs having the same name)
-- -r: Generate record types instead of POCO types
+
+- `-a`: Define input assembly
+- `-b`: Specify base namespace for generating dynamic outputs & namespaces
+- `-n`: Define namespace of generated classes
+- `-o`: Define output directory
+- `-p`: Print full type name (if your DTOs/POCOs having the same name)
+- `-r`: Generate record types instead of POCO types
 - -s: Skip generating existing files
+
 ### csproj integration
 
 #### Generate manually
-add following code to your `csproj` file.
+
+add following code to your `csproj` file:
+
 ```xml
   <Target Name="Mapster">
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet build" />
@@ -50,13 +62,17 @@ add following code to your `csproj` file.
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster mapper -a &quot;$(TargetDir)$(ProjectName).dll&quot;" />
   </Target>
 ```
+
 to generate run following command on `csproj` file directory:
+
 ```bash
 dotnet msbuild -t:Mapster
 ```
 
 #### Generate automatically on build
-add following code to your `csproj` file.
+
+add following code to your `csproj` file:
+
 ```xml
   <Target Name="Mapster" AfterTargets="AfterBuild">
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet tool restore" />
@@ -67,7 +83,9 @@ add following code to your `csproj` file.
 ```
 
 #### Clean up
-add following code to your `csproj` file.
+
+add following code to your `csproj` file:
+
 ```xml
   <ItemGroup>
     <Generated Include="**\*.g.cs" />
@@ -76,14 +94,17 @@ add following code to your `csproj` file.
     <Delete Files="@(Generated)" />
   </Target>
 ```
+
 to clean up run following command:
+
 ```bash
 dotnet msbuild -t:CleanGenerated
 ```
 
 #### Generate full type name
 
-If your POCOs and DTOs have the same name, you might need to generate using full type name, by adding `-p` flag.
+If your POCOs and DTOs have the same name, you might need to generate using full type name, by adding `-p` flag:
+
 ```xml
   <Target Name="Mapster">
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet build" />
@@ -95,8 +116,10 @@ If your POCOs and DTOs have the same name, you might need to generate using full
 ```
 
 #### Dynamic outputs & namespaces
+
 For example you have following structure.
-```
+
+```text
 Sample.CodeGen
 - Domains
   - Sub1
@@ -105,14 +128,16 @@ Sample.CodeGen
     - Domain2
 ```
 
-And if you can specify base namespace as `Sample.CodeGen.Domains`
+And if you can specify base namespace as `Sample.CodeGen.Domains`:
+
 ```xml
 <Exec WorkingDirectory="$(ProjectDir)" 
     Command="dotnet mapster model -a &quot;$(TargetDir)$(ProjectName).dll&quot; -n Sample.CodeGen.Generated -b Sample.CodeGen.Domains" />
 ```
 
-Code will be generated to
-```
+Code will be generated to:
+
+```text
 Sample.CodeGen
 - Generated
   - Sub1
@@ -120,12 +145,14 @@ Sample.CodeGen
   - Sub2
     - Dto2
 ```
+
 ### Generate DTOs and mapping codes
 
-There are 3 flavors, to generate DTOs and mapping codes
-- [Fluent API](https://github.com/MapsterMapper/Mapster/wiki/Fluent-API-Code-generation): if you don't want to touch your domain classes, or generate DTOs from domain types in different assembly.
-- [Attributes](https://github.com/MapsterMapper/Mapster/wiki/Attribute-base-Code-generation): if you would like to keep mapping declaration close to your domain classes.
-- [Interfaces](https://github.com/MapsterMapper/Mapster/wiki/Interface-base-Code-generation): if you already have DTOs, and you would like to define mapping through interfaces.
+There are 3 flavors, to generate DTOs and mapping codes:
+
+- [Fluent API](xref:Mapster.Tools.MapsterTool.FluentAPI): if you don't want to touch your domain classes, or generate DTOs from domain types in different assembly.
+- [Attributes](xref:Mapster.Tools.MapsterTool.AttributesDtoGeneration): if you would like to keep mapping declaration close to your domain classes.
+- [Interfaces](xref:Mapster.Tools.MapsterTool.Interfaces): if you already have DTOs, and you would like to define mapping through interfaces.
 
 ### Sample
 
@@ -134,11 +161,12 @@ There are 3 flavors, to generate DTOs and mapping codes
 ### Troubleshooting
 
 #### System.IO.FileNotFoundException
+
 If you get an error similar to `Unhandled exception. System.IO.FileNotFoundException: Could not load file or assembly '...'. The system cannot find the file specified.` and you are using Mapster.Tool 8.4.1 or newer, then you can try one of the following workarounds:
 
 **Workaround 1**
 
-Ensure that you are using Mapster.Tool version 8.4.2-pre01 or newer. 
+Ensure that you are using Mapster.Tool version 8.4.2-pre01 or newer. The latest pre-release version is: [![NuGet](https://img.shields.io/nuget/vpre/Mapster.Tool.svg)](https://www.nuget.org/packages/Mapster.Tool)
 
 **Workaround 2**
 
@@ -158,13 +186,12 @@ Add `<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>` to your cs
 Change your `dotnet build` command to `dotnet build -p:CopyLocalLockFileAssemblies=true` as follows:
 
 ```xml
+<Project>
+  [...]
   <Target Name="Mapster">
-	<Exec WorkingDirectory="$(ProjectDir)" Command="dotnet build -p:CopyLocalLockFileAssemblies=true" />
-	[...]
+    <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet build -p:CopyLocalLockFileAssemblies=true" /> 
+    [...]
   </Target>
-```
-
-
-
-```
+  [...]
+</Project>
 ```

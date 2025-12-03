@@ -1,14 +1,15 @@
 ---
-uid: Mapster.Plugins.Debugging
+uid: Mapster.Packages.Diagnostics
+title: "Packages - Diagnostics - Expression Debugging"
 ---
 
-### Step-into debugging
+This Package allows you to perform step-into debugging using Roslyn!
 
+```nuget
     PM> Install-Package ExpressionDebugger
+```
 
-This plugin allows you to perform step-into debugging using Roslyn!
-
-##### Usage
+## Usage
 
 Then add following code on start up (or anywhere before mapping is compiled)
 
@@ -22,9 +23,9 @@ Now in your mapping code (only in `DEBUG` mode).
 var dto = poco.Adapt<SimplePoco, SimpleDto>(); //<--- you can step-into this function!!
 ```
 
-![image](https://cloud.githubusercontent.com/assets/5763993/26521773/180427b6-431b-11e7-9188-10c01fa5ba5c.png)
+![step-into-debugging-screenshot](https://cloud.githubusercontent.com/assets/5763993/26521773/180427b6-431b-11e7-9188-10c01fa5ba5c.png)
 
-##### Using internal classes or members
+## Using internal classes or members
 
 `private`, `protected` and `internal` aren't allowed in debug mode.
 
@@ -32,14 +33,16 @@ var dto = poco.Adapt<SimplePoco, SimpleDto>(); //<--- you can step-into this fun
 
 We can also see how Mapster generates mapping logic with `ToScript` method.
 
-```
+```csharp
 var script = poco.BuildAdapter()
                 .CreateMapExpression<SimpleDto>()
                 .ToScript();
 ```
 
-### Visual Studio for Mac
+## Specifics for Visual Studio on Mac
+
 To step-into debugging, you might need to emit file
+
 ```csharp
 var opt = new ExpressionCompilationOptions { EmitFile = true };
 TypeAdapterConfig.GlobalSettings.Compiler = exp => exp.CompileWithDebugInfo(opt);
@@ -48,7 +51,8 @@ var dto = poco.Adapt<SimplePoco, SimpleDto>(); //<-- you can step-into this func
 ```
 
 ### Do not worry about performance
-In `RELEASE` mode, Roslyn compiler is actually faster than default dynamic compilation by 2x. 
+
+In `RELEASE` mode, Roslyn compiler is actually faster than default dynamic compilation by 2x.
 Here is the result:
 
 |                    Method |           Mean |       StdDev |        Error |       Gen 0 | Gen 1 | Gen 2 |  Allocated |

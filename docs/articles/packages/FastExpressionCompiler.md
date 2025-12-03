@@ -1,12 +1,17 @@
 ---
-uid: Mapster.Plugins.FastExpressionCompiler
+uid: Mapster.Packages.FastExpressionCompiler
+title: "Packages - Fast Expression Compiler Support"
 ---
 
 Need more speed? Let's compile with [FastExpressionCompiler](https://github.com/dadhi/FastExpressionCompiler).
 
-Getting the package
+## Installation
 
+Getting the package:
+
+```nuget
      PM> Install-Package FastExpressionCompiler
+```
 
 Then add following code on start up
 

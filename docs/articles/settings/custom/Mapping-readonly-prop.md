@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Settings.Custom.ReadonlyProperty
+title: "Settings - Mapping readonly properties"
 ---
 
-### Non public setter
+## Non public setter
 
 Mapster can map to non public setter automatically.
 
@@ -13,9 +14,9 @@ public class Order {
 }
 ```
 
-### Using UseDestinationValue attribute
+## Using `UseDestinationValue` attribute
 
-You can make your type pure readonly and annotate with [UseDestinationValue].
+You can make your type pure readonly and annotate with `[UseDestinationValue]`.
 
 ```csharp
 public class Order {
@@ -26,7 +27,7 @@ public class Order {
 }
 ```
 
-### Convention based setup
+## Convention based setup using `UseDestinationValue` Extension Method
 
 Or you can apply without annotate each type, for example, if you would like all readonly `ICollection<>` to use destination value.
 

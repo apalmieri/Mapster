@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Configuration.Location
+title: "Configuration - Location"
 ---
 
-### Entry point
+## Entry point for configuration
 
 Configuration should be set only once and reuse for mapping. Therefore, we should not keep configuration and mapping in the same location. For example:
 
@@ -14,7 +15,7 @@ config.ForType<Poco, Dto>().Ignore("Id"); //<--- Exception occurred here, becaus
 var dto2 = poco2.Adapt<Dto>(config);
 ```
 
-Therefore, you should separate configuration and mapping. Configuration should keep in entry point such as `Main` function or `Global.asax.cs` or `Startup.cs`.
+Therefore, you should separate configuration and mapping. Configuration should keep in entry point such as `Main` function or `Global.asax.cs` or `Program.cs` / `Startup.cs`.
 
 ```csharp
 // Application_Start in Global.asax.cs
@@ -32,13 +33,12 @@ var dto2 = poco2.Adapt<Dto>(config);
 A potential problem with separating configuration and mapping is that the code will be separated into 2 locations. You might remove or alter mapping, and you can forget to update the configuration. `Fork` method allow you to keep config and mapping inline.
 
 ```csharp
-var dto = poco.Adapt<Dto>(
-	config.Fork(forked => forked.ForType<Poco, Dto>().Ignore("Id"));
+var dto = poco.Adapt<Dto>(config.Fork(forked => forked.ForType<Poco, Dto>().Ignore("Id"));
 ```
 
 Don't worry about performance, forked config will be compiled only once. When mapping occurs for the second time, `Fork` function will return config from cache.
 
-##### Using Fork in generic class or method
+#### Using Fork in generic class or method
 
 `Fork` method uses filename and line number and the key. But if you use `Fork` method inside generic class or method, you must specify your own key (with all type names) to prevent `Fork` to return invalid config from different type arguments.
 
@@ -54,8 +54,8 @@ IQueryable<TDto> GetItems<TPoco, TDto>()
 
 ### In separated assemblies
 
-It's relatively common to have mapping configurations spread across a number of different assemblies.  
-Perhaps your domain assembly has some rules to map to domain objects and your web api has some specific rules to map to your api contracts. 
+It's relatively common to have mapping configurations spread across a number of different assemblies.
+Perhaps your domain assembly has some rules to map to domain objects and your web api has some specific rules to map to your api contracts.
 
 #### Scan method
 
@@ -66,13 +66,13 @@ Assembly scanning is simple, just create any number of `IRegister` implementatio
 ```csharp
 public class MyRegister : IRegister
 {
-	public void Register(TypeAdapterConfig config)
-	{
-		config.NewConfig<TSource, TDestination>();
+   public void Register(TypeAdapterConfig config)
+   {
+      config.NewConfig<TSource, TDestination>();
 
-		//OR to create or enhance an existing configuration
-		config.ForType<TSource, TDestination>();
-	}
+      //OR to create or enhance an existing configuration
+      config.ForType<TSource, TDestination>();
+   }
 }
 ```
 
@@ -111,7 +111,7 @@ You can also set config together with your POCO classes. For example:
 
 ```csharp
 [AdaptTo(typeof(StudentDto), PreserveReference = true)]
-public class Student { 
+public class Student {
     ...
 }
 ```

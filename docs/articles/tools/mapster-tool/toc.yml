@@ -1,7 +1,11 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dotnet/docfx/main/schemas/toc.schema.json
+- name: Overview and Installation
+  uid: Mapster.Tools.MapsterTool.Overview
+  href: Mapster-Tool-Overview.md
 - name: Fluent API
   href: Fluent-API-Code-generation.md
-- name: Attributes
+- name: Attribute-based Dto model generation
+  uid: Mapster.Tools.MapsterTool.AttributesDtoGeneration
   href: Attribute-base-Code-generation.md
 - name: Interfaces
   href: Interface-base-Code-generation.md

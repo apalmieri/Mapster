@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Settings.ShallowMerge
+title: "Settings - Shallow merge"
 ---
 
-### Deep copy vs shallow copy
+## Deep copy vs. shallow copy
 
 By default, Mapster will recursively map nested objects (deep copy). You can do shallow copying by setting `ShallowCopyForSameType` to `true`.
 
@@ -11,7 +12,8 @@ TypeAdapterConfig<TSource, TDestination>
     .NewConfig()
     .ShallowCopyForSameType(true);
 ```
-### Copy vs Merge
+
+## Copy vs. Merge
 
 By default, Mapster will map all properties, even source properties containing null values. You can copy only properties that have values (merge) by using `IgnoreNullValues` method.
 

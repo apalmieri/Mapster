@@ -1,14 +1,16 @@
 ---
-uid: Mapster.Plugins.Immutable
+uid: Mapster.Packages.Immutable
+title: "Packages - Immutable Support"
 ---
 
-# Mapster.Immutable
-Immutable collection supports
+This Package enables Immutable collection support in Mapster.
 
-### Install
+### Installation
 
+```nuget
     PM> Install-Package Mapster.Immutable
-    
+```
+
 ### Usage
 
 Call `EnableImmutableMapping` from your `TypeAdapterConfig` to enable Immutable collection.
@@ -17,13 +19,14 @@ Call `EnableImmutableMapping` from your `TypeAdapterConfig` to enable Immutable 
 TypeAdapterConfig.GlobalSettings.EnableImmutableMapping();
 ```
 
-or 
+or:
 
 ```csharp
 config.EnableImmutableMapping();
 ```
-    
-This will allow mapping to 
+
+This will allow mapping to:
+
 - `IImmutableDictionary<,>`
 - `IImmutableList<>`
 - `IImmutableQueue<>`

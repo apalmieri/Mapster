@@ -1,16 +1,17 @@
 ---
-uid: Mapster.Plugins.Async
+uid: Mapster.Packages.Async
+title: "Packages - Mapster Async Support"
 ---
 
-### Async support
+This Package allows you to perform async operation for mapping.
 
-    PM> Install-Package Mapster.Async
+```nuget
+   PM> Install-Package Mapster.Async
+```
 
-This plugin allows you to perform async operation for mapping
+## Setup
 
-##### Setup
-
-Use `AfterMappingAsync` to setup async operation
+Use `AfterMappingAsync` to setup async operation:
 
 ```csharp
 config.NewConfig<Poco, Dto>()
@@ -22,7 +23,7 @@ config.NewConfig<Poco, Dto>()
     });
 ```
 
-##### Mapping
+## Mapping
 
 Then map asynchronously with `AdaptToTypeAsync`.
 
@@ -31,8 +32,7 @@ var dto = await poco.BuildAdapter()
     .AdaptToTypeAsync<Dto>();
 ```
 
-
-Or like this, if you use mapper instance.
+Or like this, if you use mapper instance:
 
 ```csharp
 var dto = await _mapper.From(poco)

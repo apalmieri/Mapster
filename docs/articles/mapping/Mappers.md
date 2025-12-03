@@ -1,8 +1,9 @@
 ---
 uid: Mapster.Mapping.Mappers
+title: "Mapping - Mappers"
 ---
 
-### Extension method
+## Extension method
 
 You can simply call `Adapt` method from anywhere.
 
@@ -18,7 +19,7 @@ var dest = src.Adapt<TDestination>();
 
 2 extension methods are doing the same thing. `src.Adapt<TDestination>` will cast `src` to object. Therefore, if you map value type, please use `src.Adapt<TSource, TDestination>` to avoid boxing and unboxing.
 
-### Mapper instance
+## Mapper instance
 
 In some cases, you need an instance of a mapper (or a factory function) to pass into a DI container. Mapster has
 the `IMapper` and `Mapper` to fill this need:
@@ -33,7 +34,7 @@ And usage `Map` method to perform mapping.
 var result = mapper.Map<TDestination>(source);
 ```
 
-### Builder
+## Builder
 
 In most case `Adapt` method is enough, but sometimes we need builder to support fancy scenario. Basic example, is to pass run-time value.
 
@@ -51,6 +52,6 @@ var dto = mapper.From(poco)
               .AdaptToType<SimpleDto>();
 ```
 
-### Code generation
+## Code generation
 
-See [Mapster.Tool](https://github.com/MapsterMapper/Mapster/wiki/Mapster.Tool) for generating your specific mapper class, rather than using the provided mappers.
+See [Mapster.Tool](xref:Mapster.Tools.MapsterTool.Overview) for generating your specific mapper class, rather than using the provided mappers.
