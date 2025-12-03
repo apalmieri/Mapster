@@ -1,3 +1,7 @@
+---
+uid: Mapster.Mapping.Mappers
+---
+
 ### Extension method
 
 You can simply call `Adapt` method from anywhere.

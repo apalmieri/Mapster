@@ -1,3 +1,7 @@
+---
+uid: Mapster.Tools.MapsterTool.Interfaces
+---
+
 ### Generate mapper from interface
 
 Annotate your interface with `[Mapper]` in order for tool to pickup for generation.

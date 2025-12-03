@@ -1,3 +1,7 @@
+---
+uid: Mapster.Tools.MapsterTool.Attributes
+---
+
 ### Generate models
 
 Annotate your class with `[AdaptFrom]`, `[AdaptTo]`, or `[AdaptTwoWays]`.

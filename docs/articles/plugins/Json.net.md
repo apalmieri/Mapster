@@ -1,3 +1,7 @@
+---
+uid: Mapster.Plugins.JsonNet
+---
+
 # Mapster.JsonNet
 Json.net conversion supports
 

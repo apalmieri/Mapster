@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.Custom.NamingConvention
+---
+
 ### Flexible name
 
 By default, Mapster will map property with case sensitive name. You can adjust to flexible name mapping by setting `NameMatchingStrategy.Flexible` to `NameMatchingStrategy` method. This setting will allow matching between `PascalCase`, `camelCase`, `lower_case`, and `UPPER_CASE`. 

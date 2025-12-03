@@ -1,3 +1,7 @@
+---
+uid: Mapster.Plugins.Debugging
+---
+
 ### Step-into debugging
 
     PM> Install-Package ExpressionDebugger

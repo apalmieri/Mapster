@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.Custom.IgnoringMembers
+---
+
 ### Ignore
 
 Mapster will automatically map properties with the same names. You can ignore members by using the `Ignore` method.

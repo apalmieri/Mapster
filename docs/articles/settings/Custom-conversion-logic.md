@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.CustomConversionLogic
+---
+
 ### Custom type conversion
 
 In some cases, you may want to have complete control over how an object is mapped. You can register specific transformations using the `MapWith` method.

@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.Custom.NonPublicMembers
+---
+
 ### EnableNonPublicMembers
 
 This will allow Mapster to set to all non-public members.

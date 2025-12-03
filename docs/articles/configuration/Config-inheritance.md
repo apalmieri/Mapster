@@ -1,3 +1,7 @@
+---
+uid: Mapster.Configuration.Inheritance
+---
+
 ### Implicit inheritance
 
 Type mappings will automatically inherit for source types. Ie. if you set up following config.

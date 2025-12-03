@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.Custom.RuleBasedMapping
+---
+
 By default, Mapster will include public fields and properties, but we can change this behavior by `IncludeMember` and `IgnoreMember` method. The methods require predicate, and input types of predicate are:
 
 ```csharp

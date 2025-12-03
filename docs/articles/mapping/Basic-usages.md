@@ -1,3 +1,7 @@
+---
+uid: Mapster.Mapping.BasicUsages
+---
+
 ### Mapping to a new object
 Mapster creates the destination object and maps values to it.
 

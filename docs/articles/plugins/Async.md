@@ -1,3 +1,7 @@
+---
+uid: Mapster.Plugins.Async
+---
+
 ### Async support
 
     PM> Install-Package Mapster.Async

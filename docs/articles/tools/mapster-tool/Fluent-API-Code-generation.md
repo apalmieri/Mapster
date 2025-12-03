@@ -1,3 +1,7 @@
+---
+uid: Mapster.Tools.MapsterTool.FluentAPI
+---
+
 ### Configuration class
 
 Create a configuration class implement `ICodeGenerationRegister`.

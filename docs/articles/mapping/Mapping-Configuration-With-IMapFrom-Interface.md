@@ -1,3 +1,7 @@
+---
+uid: Mapster.Mapping.IMapFromInterface
+---
+
 Before using this feature you have to add this line:
 ```csharp
 TypeAdapterConfig.GlobalSettings.ScanInheritedTypes(Assembly.GetExecutingAssembly());

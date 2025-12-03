@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.BeforeAfterMapping
+---
+
 ### Before mapping action
 
 You can perform actions before mapping started by using `BeforeMapping` method.

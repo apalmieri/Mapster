@@ -1,3 +1,7 @@
+---
+uid: Mapster.Plugins.Immutable
+---
+
 # Mapster.Immutable
 Immutable collection supports
 

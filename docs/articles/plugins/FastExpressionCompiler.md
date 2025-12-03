@@ -1,3 +1,7 @@
+---
+uid: Mapster.Plugins.FastExpressionCompiler
+---
+
 Need more speed? Let's compile with [FastExpressionCompiler](https://github.com/dadhi/FastExpressionCompiler).
 
 Getting the package

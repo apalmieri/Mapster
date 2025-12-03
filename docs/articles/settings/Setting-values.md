@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.SettingValues
+---
+
 ### Computed value
 
 You can use `Map` method to specify logic to compute value. For example, compute full name from first name and last name.

@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.Custom.Mapping
+---
+
 ### Custom member mapping
 
 You can customize how Mapster maps values to a property.

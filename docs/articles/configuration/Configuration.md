@@ -1,3 +1,7 @@
+---
+uid: Mapster.Configuration.Overview
+---
+
 ### Setting per type pair
 
 You can easily create settings for a type mapping by using: `TypeAdapterConfig<TSource, TDestination>.NewConfig()`.

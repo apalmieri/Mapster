@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.Custom.ReadonlyProperty
+---
+
 ### Non public setter
 
 Mapster can map to non public setter automatically.

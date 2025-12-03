@@ -1,3 +1,7 @@
+---
+uid: Mapster.Plugins.DependencyInjection
+---
+
 ### Dependency injection support
 
     PM> Install-Package Mapster.DependencyInjection

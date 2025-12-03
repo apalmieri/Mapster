@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dotnet/docfx/main/schemas/toc.schema.json
+# NOTE: Those top level items will be shown as the Top Navigation Menu Entries
+# IMPORTANT: Do not add the explicit toc.yml files under the appropriate folders here, which already is the default behavior of docfx, as this would otherwhise attempt to show them in the top navigation instead of the side navigation TOCs.
+- name: Home
+  href: index.md
+- name: Documentation
+  href: articles/
+- name: API Reference
+  href: api/

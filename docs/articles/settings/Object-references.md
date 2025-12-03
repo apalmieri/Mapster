@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.ObjectReferences
+---
+
 ### Preserve reference (preventing circular reference stackoverflow)
 
 When mapping objects with circular references, a stackoverflow exception will result. This is because Mapster will get stuck in a loop trying to recursively map the circular reference. If you would like to map circular references or preserve references (such as 2 properties pointing to the same object), you can do it by setting `PreserveReference` to `true`

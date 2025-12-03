@@ -1,3 +1,7 @@
+---
+uid: Mapster.Tools.MapsterTool
+---
+
 ## Mapster.Tool
 
 ### Install Mapster.Tool

@@ -1,3 +1,7 @@
+---
+uid: Mapster.Configuration.NestedMapping
+---
+
 For example if you have parent and child classes.
 
 ```csharp

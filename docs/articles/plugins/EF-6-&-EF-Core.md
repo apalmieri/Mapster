@@ -1,3 +1,7 @@
+---
+uid: Mapster.Plugins.EntityFramework
+---
+
 ### EF 6 & EF Core support
 
 For EF 6

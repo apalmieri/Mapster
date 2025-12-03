@@ -1,3 +1,7 @@
+---
+uid: Mapster.Tools.TextTemplate
+---
+
 ### TextTemplate
 ```
     PM> Install-Package ExpressionTranslator

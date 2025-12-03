@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.ConstructorMapping
+---
+
 ### Custom Destination Object Creation
 
 You can provide a function call to create your destination objects instead of using the default object creation

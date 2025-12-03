@@ -1,3 +1,7 @@
+---
+uid: Mapster.Configuration.Instance
+---
+
 ### Config instance
 
 You may wish to have different settings in different scenarios.

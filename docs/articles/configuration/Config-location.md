@@ -1,3 +1,7 @@
+---
+uid: Mapster.Configuration.Location
+---
+
 ### Entry point
 
 Configuration should be set only once and reuse for mapping. Therefore, we should not keep configuration and mapping in the same location. For example:

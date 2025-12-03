@@ -1,3 +1,7 @@
+---
+uid: Mapster.Configuration.ValidationAndCompilation
+---
+
 To validate your mapping in unit tests and in order to help with "Fail Fast" situations, the following strict mapping modes have been added.
 
 ### Explicit Mapping

@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.ShallowMerge
+---
+
 ### Deep copy vs shallow copy
 
 By default, Mapster will recursively map nested objects (deep copy). You can do shallow copying by setting `ShallowCopyForSameType` to `true`.

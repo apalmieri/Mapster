@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dotnet/docfx/main/schemas/toc.schema.json
+# NOTE: starting from here you can add side navigation items by nesting them under "items"
+- items:
+  - name: Mapping
+    href: mapping/toc.yml
+  - name: Configuration
+    href: configuration/toc.yml
+  - name: Settings
+    href: settings/toc.yml
+  - name: Plugins
+    href: plugins/toc.yml
+  - name: Tools
+    href: tools/toc.yml

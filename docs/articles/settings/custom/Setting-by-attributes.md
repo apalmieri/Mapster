@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.Custom.Attributes
+---
+
 ### AdaptIgnore attribute
 
 When a property decorated with `[AdaptIgnore]`, that property will be excluded from Mapping. For example, if we would like to exclude price to be mapped.

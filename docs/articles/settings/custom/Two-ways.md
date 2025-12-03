@@ -1,3 +1,7 @@
+---
+uid: Mapster.Settings.Custom.TwoWaysMapping
+---
+
 ### 2-ways mapping
 
 If you need to map object from POCO to DTO, and map back from DTO to POCO. You can define the setting once by using `TwoWays`.
