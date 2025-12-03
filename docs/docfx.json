@@ -13,7 +13,7 @@
       ],
       "includeExplicitInterfaceImplementations": false,
       "disableDefaultFilter": false,
-      "filter": "Resources/filterConfig.yml",
+      "filter": "config/filterConfig.yml",
       "properties": {
         "TargetFramework" : "net9.0"
       },
