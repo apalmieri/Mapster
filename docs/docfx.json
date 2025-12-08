@@ -1,28 +1,27 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
-  "metadata": [
-    {
-      "src": [
-        {
-          "files": [
-            "../src/Mapster/Mapster.sln"
-          ],
-          "src": "../src"
-        }
-      ],
-      "includeExplicitInterfaceImplementations": false,
-      "disableDefaultFilter": false,
-     // "filter": "config/filterConfig.yml",
-      "properties": {
-        "TargetFramework" : "net9.0"
-      },
-      "codeSourceBasePath": "../",
-      "noRestore": true,
-      "output": "api",
-      "memberLayout": "samePage",
-      "outputFormat": "apiPage"
-    }
-  ],
+  // "metadata": [
+  //   {
+  //     "src": [
+  //       {
+  //         "files": [
+  //           "**/Mapster.sln"
+  //         ],
+  //         "src": "../src"
+  //       }
+  //     ],
+  //     "includeExplicitInterfaceImplementations": false,
+  //     "disableDefaultFilter": false,
+  //    // "filter": "config/filterConfig.yml",
+  //     "properties": {
+  //       "TargetFramework" : "net9.0"
+  //     },
+  //     "noRestore": false,
+  //     "output": "api",
+  //     "memberLayout": "samePage",
+  //     "outputFormat": "apiPage"
+  //   }
+  // ],
   "build": {
       "globalMetadata": {
       "_appTitle": "Mapster - The Mapper of Your Domain",
@@ -45,12 +44,12 @@
       "_layout": "landing"
     },
     "content": [
-      {
-        "files": [
-          "api/**.yml",
-          "api/index.md"
-        ]
-      },
+      // {
+      //   "files": [
+      //     "api/**.yml",
+      //     "api/index.md"
+      //   ]
+      // },
       {
         "files": [
           "articles/**.{md,yml}",
@@ -61,10 +60,6 @@
         "exclude": [
           "**/.include/**"
         ]
-      },
-      {
-        "rootTocPath": "releases",
-        "files":["releases/**.{md}"]
       }
     ],
     "resource": [
@@ -79,8 +74,8 @@
     "overwrite": [
       {
         "files":[
-          "api/**.md",
-          "api/**.yml",
+          // "api/**.md",
+          // "api/**.yml",
           "articles/**.md",
           "articles/**.yml",
           "index.md"
