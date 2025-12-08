@@ -114,12 +114,12 @@
 | `[AdaptTo]` `[AdaptFrom]` `[AdaptTwoWays]` | Add setting on POCO class | [location](xref:Mapster.Configuration.Location#attributes) |
 | `[Mapper]` `[GenerateMapper]` `[PropertyType]` | Define setting for code generation | [Mapster.Tool](xref:Mapster.Tools.MapsterTool.Overview) |
 
-#### Plugins
+#### Packages
 
-| Plugin | Method        | Description           |
+| Packages | Method        | Description           |
 | ------ | ------------- |-----------------------|
 | [Async](xref:Mapster.Packages.Async) | `setting.AfterMappingAsync` <br> `builder.AdaptToTypeAsync` | perform async operation on mapping |
-| [Debugging](xref:Mapster.Packages.Diagnostics) | `config.Compiler = exp => exp.CompileWithDebugInfo()` | compile to allow step into debugging |
+| [Debugging](xref:Mapster.Packages.ExpressionDebugging) | `config.Compiler = exp => exp.CompileWithDebugInfo()` | compile to allow step into debugging |
 | [Dependency Injection](xref:Mapster.Packages.DependencyInjection) | `MapContext.Current.GetService<IService>()` | Inject service into mapping logic |
 | [EF 6 & EF Core](xref:Mapster.Packages.EntityFramework) | `builder.EntityFromContext` | Copy data to tracked EF entity |
 | [FEC](xref:Mapster.Packages.FastExpressionCompiler) | `config.Compiler = exp => exp.CompileFast()` | compile using FastExpressionCompiler |

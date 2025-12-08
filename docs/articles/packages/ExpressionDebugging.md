@@ -1,6 +1,6 @@
 ---
-uid: Mapster.Packages.Diagnostics
-title: "Packages - Diagnostics - Expression Debugging"
+uid: Mapster.Packages.ExpressionDebugging
+title: "Packages - Expression Debugging"
 ---
 
 This Package allows you to perform step-into debugging using Roslyn!
