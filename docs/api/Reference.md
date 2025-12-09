@@ -1,9 +1,13 @@
+---
+uid: Mapster.References
+---
+
 # References
 
 ## Basic
 
-| Method        | Description           | Link  |
-| ------------- |-----------------------| ----- |
+| Method       | Description           | Link  |
+| -------------|-----------------------| ----- |
 | `src.Adapt<Dest>()`     | Mapping to new type | [basic](xref:Mapster.Mapping.BasicUsages) |
 | `src.Adapt(dest)`       | Mapping to existing object      | [basic](xref:Mapster.Mapping.BasicUsages) |
 | `query.ProjectToType<Dest>()` | Mapping from queryable     | [basic](xref:Mapster.Mapping.BasicUsages) |
@@ -11,10 +15,10 @@
 
 ### Mapper instance (for dependency injection)
 
-| Method        | Description           | Link  |
-| ------------- |-----------------------| ----- |
-| `IMapper mapper = new Mapper()`     | Create mapper instance | [mappers](xref:Mapster.Mapping.Mappers) |
-| `mapper.Map<Dest>(src)`     | Mapping to new type |  |
+| Method       | Description          | Link  |
+| -------------|----------------------| ----- |
+| `IMapper mapper = new Mapper()`| Create mapper instance | [mappers](xref:Mapster.Mapping.Mappers) |
+| `mapper.Map<Dest>(src)`        | Mapping to new type |  |
 | `mapper.Map(src, dest)`       | Mapping to existing object      |  |
 
 ### Builder (for complex mapping)
@@ -30,34 +34,35 @@
 | `.CreateMapToTargetExpression<Dest>()`       | Get mapping to existing object expression |  |
 | `.CreateProjectionExpression<Dest>()`     | Get mapping from queryable expression |  |
 
-#### Config
+## Config
 
-| Method        | Description           | Link  |
-| ------------- |-----------------------| ----- |
-| `TypeAdapterConfig.GlobalSettings` | Global config | [config](xref:Mapster.Configuration.Overview) |
-| `var config = new TypeAdapterConfig()` | Create new config instance | [config instance](xref:Mapster.Configuration.Instance) |
-| `src.Adapt<Dest>(config)` | Passing config to mapping |  |
-| `new Mapper(config)` | Passing config to mapper instance | |
-| `src.BuildAdapter(config)` | Passing config to builder |  |
-| `config.RequireDestinationMemberSource` | Validate all properties are mapped | [config validation](xref:Mapster.Configuration.ValidationAndCompilation) |
-| `config.RequireExplicitMapping` | Validate all type pairs are defined | [config validation](xref:Mapster.Configuration.ValidationAndCompilation) |
+| Method                                       | Description                             | Link  |
+|----------------------------------------------|-----------------------------------------| ----- |
+| `TypeAdapterConfig.GlobalSettings`           | Global config                           | [config](xref:Mapster.Configuration.Overview) |
+| `var config = new TypeAdapterConfig()`       | Create new config instance              | [config instance](xref:Mapster.Configuration.Instance) |
+| `src.Adapt<Dest>(config)`                    | Passing config to mapping               |  |
+| `new Mapper(config)`                         | Passing config to mapper instance       |  |
+| `src.BuildAdapter(config)`                   | Passing config to builder               |  |
+| `config.RequireDestinationMemberSource`      | Validate all properties are mapped      | [config validation](xref:Mapster.Configuration.ValidationAndCompilation) |
+| `config.RequireExplicitMapping`              | Validate all type pairs are defined     | [config validation](xref:Mapster.Configuration.ValidationAndCompilation) |
 | `config.AllowImplicitDestinationInheritance` | Use config from destination based class | [inheritance](xref:Mapster.Configuration.Inheritance) |
-| `config.AllowImplicitSourceInheritance` | Use config from source based class | [inheritance](xref:Mapster.Configuration.Inheritance) |
-| `config.SelfContainedCodeGeneration` | Generate all nested mapping in 1 method | [TextTemplate](xref:Mapster.Tools.TextTemplate) |
-| `config.Compile()` | Validate mapping instruction & cache | [config validation](xref:Mapster.Configuration.ValidationAndCompilation) |
-| `config.CompileProjection()` | Validate mapping instruction & cache for queryable |  |
-| `config.Clone()` | Copy config | [config instance](xref:Mapster.Configuration.Instance) |
-| `config.Fork(forked => ...)` | Inline configuration | [config location](xref:Mapster.Configuration.Location) |
+| `config.AllowImplicitSourceInheritance`      | Use config from source based class      | [inheritance](xref:Mapster.Configuration.Inheritance) |
+| `config.SelfContainedCodeGeneration`         | Generate all nested mapping in 1 method | [TextTemplate](xref:Mapster.Tools.TextTemplate) |
+| `config.Compile()`                           | Validate mapping instruction & cache    | [config validation](xref:Mapster.Configuration.ValidationAndCompilation) |
+| `config.CompileProjection()`                 | Validate mapping instruction & cache for queryable |  |
+| `config.Clone()`                             | Copy config | [config instance](xref:Mapster.Configuration.Instance) |
+| `config.Fork(forked => ...)`                 | Inline configuration | [config location](xref:Mapster.Configuration.Location) |
 
-#### Config scanning
+### Config scanning
 
-| Method        | Description           | Link  |
-| ------------- |-----------------------| ----- |
-| `IRegister` | Interface for config scanning | [config location](xref:Mapster.Configuration.Location) |
+| Method                       | Description                   | Link  |
+|------------------------------|-------------------------------| ----- |
+| `IRegister`                  | Interface for config scanning | [config location](xref:Mapster.Configuration.Location) |
 | `config.Scan(...assemblies)` | Scan for config in assemblies | [config location](xref:Mapster.Configuration.Location) |
-| `config.Apply(...registers)` | Apply registers directly | [config location](xref:Mapster.Configuration.Location) |
+| `config.Apply(...registers)` | Apply registers directly      | [config location](xref:Mapster.Configuration.Location) |
 
-#### Declare settings
+<!-- TODO: Check if this might be Settings? If so, the used variable might not be the best choice 'config' -->
+### Declare settings
 
 | Method        | Description           | Link  |
 | ------------- |-----------------------| ----- |
@@ -69,7 +74,7 @@
 | `config.ForDestinationType<Dest>()` | Get setting that applied to specific destination type | [config](xref:Mapster.Configuration.Overview) |
 |  | Configuration for nested mapping | [nested mapping](xref:Mapster.Configuration.NestedMapping) |
 
-#### Settings
+## Settings
 
 | Method        | Description           | Apply to queryable | Link  |
 | ------------- |-----------------------| ------------ | ----- |
@@ -104,7 +109,7 @@
 | `Unflattening` | Allow unflatten mapping | x |[2-ways & unflattening](xref:Mapster.Settings.Custom.TwoWaysMapping) |
 | `UseDestinationValue` | Use existing property object to map data |  |[readonly-prop](xref:Mapster.Settings.Custom.ReadonlyProperty) |
 
-#### Attributes
+## Attributes
 
 | Annotation        | Description           | Link  |
 | ------------- |-----------------------| ----- |
@@ -114,7 +119,7 @@
 | `[AdaptTo]` `[AdaptFrom]` `[AdaptTwoWays]` | Add setting on POCO class | [location](xref:Mapster.Configuration.Location#attributes) |
 | `[Mapper]` `[GenerateMapper]` `[PropertyType]` | Define setting for code generation | [Mapster.Tool](xref:Mapster.Tools.MapsterTool.Overview) |
 
-#### Packages
+## Packages
 
 | Packages | Method        | Description           |
 | ------ | ------------- |-----------------------|
@@ -126,7 +131,7 @@
 | [Immutable](xref:Mapster.Packages.Immutable) | `config.EnableImmutableMapping()` | mapping to immutable collection |
 | [Json.net](xref:Mapster.Packages.JsonNet) | `config.EnableJsonMapping()` | map json from/to poco and string |
 
-#### Code Generation Tools
+## Code Generation Tools
 
 | Plugin | Tool          | Description           |
 | ------ | ------------- |-----------------------|

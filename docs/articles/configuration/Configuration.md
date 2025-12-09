@@ -2,6 +2,7 @@
 uid: Mapster.Configuration.Overview
 title: "Configuration - Overview"
 ---
+<!-- TODO: Check if this is really Configuration or Settings -->
 
 ## Setting per type pair
 
@@ -13,17 +14,17 @@ TypeAdapterConfig<TSource, TDestination>
     .NewConfig()
     .Ignore(dest => dest.Age)
     .Map(dest => dest.FullName,
-        src => string.Format("{0} {1}", src.FirstName, src.LastName));
+          src => string.Format("{0} {1}", src.FirstName, src.LastName));
 ```
 
 As an alternative to `NewConfig`, you can use `ForType` in the same way:
 
 ```csharp
 TypeAdapterConfig<TSource, TDestination>
-        .ForType()
-        .Ignore(dest => dest.Age)
-        .Map(dest => dest.FullName,
-            src => string.Format("{0} {1}", src.FirstName, src.LastName));
+    .ForType()
+    .Ignore(dest => dest.Age)
+    .Map(dest => dest.FullName,
+         src => string.Format("{0} {1}", src.FirstName, src.LastName));
 ```
 
 `ForType` differs in that it will create a new mapping if one doesn't exist, but if the specified TSource => TDestination
@@ -50,14 +51,14 @@ In the example below, when any source type and destination type are the same, we
 
 ```csharp
 TypeAdapterConfig.GlobalSettings.When((srcType, destType, mapType) => srcType == destType)
-    .Ignore("Id");
+                               .Ignore("Id");
 ```
 
 In this example, the config would only apply to Query Expressions (projections).
 
 ```csharp
 TypeAdapterConfig.GlobalSettings.When((srcType, destType, mapType) => mapType == MapType.Projection)
-    .IgnoreAttribute(typeof(NotMapAttribute));
+                                .IgnoreAttribute(typeof(NotMapAttribute));
 ```
 
 ## Destination type only
@@ -66,7 +67,7 @@ A setting can also be created without knowing the source type, by using `ForDest
 
 ```csharp
 TypeAdapterConfig.GlobalSettings.ForDestinationType<IValidator>()
-                    .AfterMapping(dest => dest.Validate());
+                                .AfterMapping(dest => dest.Validate());
 ```
 
 NOTE: `ForDestinationType` above will always apply to all types assignable to `IValidator`. If destination class implements `IValidator`, it will also apply the `AfterMapping` config.
@@ -77,5 +78,5 @@ If the mapping type is generic, you can create a setting by passing generic type
 
 ```csharp
 TypeAdapterConfig.GlobalSettings.ForType(typeof(GenericPoco<>), typeof(GenericDto<>))
-    .Map("value", "Value");
+                                .Map("value", "Value");
 ```

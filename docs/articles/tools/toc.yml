@@ -1,5 +1,4 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dotnet/docfx/main/schemas/toc.schema.json
-# TODO: Decide if we want Tools to have a topicHref
 items:
 - name: Mapster Tool
   topicHref: xref:Mapster.Tools.MapsterTool.Overview

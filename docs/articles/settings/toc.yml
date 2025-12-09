@@ -1,6 +1,4 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/dotnet/docfx/main/schemas/toc.schema.json
-- name: Custom member matching logic
-  href: custom/toc.yml
 - name: Constructor mapping
   uid: Mapster.Settings.ConstructorMapping
   href: Constructor-mapping.md
@@ -19,3 +17,5 @@
 - name: Custom conversion logic
   uid: Mapster.Settings.CustomConversionLogic
   href: Custom-conversion-logic.md
+- name: Custom member matching logic
+  href: custom/toc.yml
