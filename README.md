@@ -1,4 +1,4 @@
-![Mapster Icon](https://cloud.githubusercontent.com/assets/5763993/26522718/d16f3e42-4330-11e7-9b78-f8c7402624e7.png)
+![Mapster Icon](https://raw.githubusercontent.com/MapsterMapper/Mapster/master/docs/articles/.assets/mapster-logo.svg)
 
 # Mapster - The Mapper of Your Domain
 

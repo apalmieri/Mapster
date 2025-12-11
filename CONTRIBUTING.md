@@ -1,3 +1,5 @@
+![Mapster Icon](https://raw.githubusercontent.com/MapsterMapper/Mapster/master/docs/articles/.assets/mapster-logo.svg)
+
 # Contributing to Mapster
 
 Thank you for your interest in contributing! We welcome contributions from the community.

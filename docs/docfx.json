@@ -26,8 +26,8 @@
       "globalMetadata": {
       "_appTitle": "Mapster - The Mapper of Your Domain",
       "_appName": "Mapster",
-      //"_appFaviconPath": "images/mapster-logo.png", // requires rescaling and eventually converting to .ico
-      // "_appLogoPath": "images/mapster-logo.png", // requires rescaling!
+      "_appFaviconPath": "images/mapster-logo.svg",
+      "_appLogoPath": "images/mapster-logo.svg",
       "_copyrightFooter": "© 2025 Here comes your Name, All rights reserved.",
       "_ownerName": "Awesome Developer",
       "_githubProfileLink": "https://github.com/MapsterMapper",
@@ -103,7 +103,7 @@
     },
     "output": "_site",
     "sitemap": {
-      "baseUrl": "https://devtkss.github.io/Mapster",
+      "baseUrl": "https://mapstermapper.github.io/Mapster",
       "priority": 0.1,
       "changefreq": "monthly"
     }
