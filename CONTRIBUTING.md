@@ -1,4 +1,4 @@
-![Mapster Icon](https://raw.githubusercontent.com/MapsterMapper/Mapster/master/docs/articles/.assets/mapster-logo.svg)
+![Mapster Icon](https://raw.githubusercontent.com/MapsterMapper/Mapster/master/docs/images/mapster-logo.svg)
 
 # Contributing to Mapster
 

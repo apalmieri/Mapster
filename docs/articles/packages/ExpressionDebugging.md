@@ -23,7 +23,7 @@ Now in your mapping code (only in `DEBUG` mode).
 var dto = poco.Adapt<SimplePoco, SimpleDto>(); //<--- you can step-into this function!!
 ```
 
-![step-into-debugging-screenshot](https://cloud.githubusercontent.com/assets/5763993/26521773/180427b6-431b-11e7-9188-10c01fa5ba5c.png)
+![step-into-debugging-screenshot](../.assets/step-into-debugging.png)
 
 ## Using internal classes or members
 

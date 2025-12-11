@@ -78,8 +78,8 @@
     "resource": [
       {
         "files": [
-          "images/*.{png,ico}",
-          "articles/.assets/*.{png,gif}"
+          "images/*.{png,ico,svg}",
+          "articles/.assets/*.{png,gif,svg}"
         ],
         "dot": true
       }

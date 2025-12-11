@@ -1,4 +1,4 @@
-![Mapster Icon](https://raw.githubusercontent.com/MapsterMapper/Mapster/master/docs/articles/.assets/mapster-logo.svg)
+![Mapster Icon](https://raw.githubusercontent.com/MapsterMapper/Mapster/master/docs/images/mapster-logo.svg)
 
 # Mapster - The Mapper of Your Domain
 
@@ -161,6 +161,7 @@ And you could gain up to 12x faster performance with:
 ### Step into debugging
 
 [Step-into debugging](https://mapstermapper.github.io/docs/packages/Diagnostics.html) lets you debug your mapping and inspect values just like your code.
+
 ![inspect-generated-source-code-while-debugging](https://cloud.githubusercontent.com/assets/5763993/26521773/180427b6-431b-11e7-9188-10c01fa5ba5c.png)
 
 ### Code Generation
