@@ -506,6 +506,23 @@ namespace Mapster.Tests
             result.X.ShouldBe(100);
         }
 
+        /// <summary>
+        /// https://github.com/MapsterMapper/Mapster/issues/842
+        /// </summary>
+        [TestMethod]
+        public void ClassCustomCtorInsaiderUpdateWorking()
+        {
+            TypeAdapterConfig<TestRecord, AutoCtorDestYx>.NewConfig()
+                .Map("y", src => src.X);
+
+            var source = new InsaiderData() { X = new TestRecord() { X = 100 } };
+            var destination = new InsaiderWithCtorDestYx(); // nullable insaider
+            source.Adapt(destination);
+
+            destination.X.X.ShouldBe(100);
+        }
+
+
         #region NowNotWorking
 
         /// <summary>
@@ -919,7 +936,7 @@ namespace Mapster.Tests
             X = x;
         }
 
-        public int X { get; }
+        public int X { get; set; }
     }
 
     class AutoCtorDestYx
@@ -930,6 +947,16 @@ namespace Mapster.Tests
         }
 
         public int X { get; }
+    }
+
+    class InsaiderData 
+    {
+        public TestRecord X { set; get; }
+    }
+
+    class InsaiderWithCtorDestYx
+    {
+        public AutoCtorDestYx X { set; get; }
     }
 
     #endregion TestClasses
