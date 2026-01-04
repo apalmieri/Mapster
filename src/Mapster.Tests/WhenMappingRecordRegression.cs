@@ -462,6 +462,82 @@ namespace Mapster.Tests
             result.LastName.ShouldBe(source.LastName);
         }
 
+        /// <summary>
+        /// https://github.com/MapsterMapper/Mapster/issues/842
+        /// </summary>
+        [TestMethod]
+        public void ClassCtorAutomapingWorking()
+        {
+            var source = new TestRecord() { X = 100 };
+            var result = source.Adapt<AutoCtorDestX>();
+
+            result.X.ShouldBe(100);
+        }
+
+        /// <summary>
+        /// https://github.com/MapsterMapper/Mapster/issues/842
+        /// </summary>
+        [TestMethod]
+        public void ClassCustomCtorWitoutMapNotWorking()
+        {
+            TypeAdapterConfig.GlobalSettings.Clear();
+
+            var source = new TestRecord() { X = 100 };
+
+            Should.Throw<InvalidOperationException>(() => 
+            {
+                source.Adapt<AutoCtorDestYx>();
+            });
+        }
+
+        /// <summary>
+        /// https://github.com/MapsterMapper/Mapster/issues/842
+        /// </summary>
+        [TestMethod]
+        public void ClassCustomCtorWithMapWorking()
+        {
+            TypeAdapterConfig<TestRecord, AutoCtorDestYx>.NewConfig()
+                .Map("y", src => src.X);
+
+
+            var source = new TestRecord() { X = 100 };
+            var result = source.Adapt<AutoCtorDestYx>();
+
+            result.X.ShouldBe(100);
+        }
+
+        /// <summary>
+        /// https://github.com/MapsterMapper/Mapster/issues/842
+        /// </summary>
+        [TestMethod]
+        public void ClassCustomCtorInsiderUpdateWorking()
+        {
+            TypeAdapterConfig<TestRecord, AutoCtorDestYx>.NewConfig()
+                .Map("y", src => src.X);
+
+            var source = new InsiderData() { X = new TestRecord() { X = 100 } };
+            var destination = new InsiderWithCtorDestYx(); // null insider
+            source.Adapt(destination);
+
+            destination.X.X.ShouldBe(100);
+        }
+
+        /// <summary>
+        /// https://github.com/MapsterMapper/Mapster/issues/842
+        /// </summary>
+        [TestMethod]
+        public void ClassUpdateAutoPropertyWitoutSetterWorking()
+        {
+            var source = new TestRecord() { X = 100 };
+            var patch = new TestRecord() { X = 200 };
+            var result = source.Adapt<AutoCtorDestX>();
+
+            patch.Adapt(result);
+
+            result.X.ShouldBe(200);
+        }
+
+
         #region NowNotWorking
 
         /// <summary>
@@ -867,6 +943,36 @@ namespace Mapster.Tests
     }
 
     sealed record TestSealedRecordPositional(int X);
+
+    class AutoCtorDestX
+    {
+        public AutoCtorDestX(int x) 
+        {
+            X = x;
+        }
+
+        public int X { get; set; }
+    }
+
+    class AutoCtorDestYx
+    {
+        public AutoCtorDestYx(int y)
+        {
+            X = y;
+        }
+
+        public int X { get; }
+    }
+
+    class InsiderData 
+    {
+        public TestRecord X { set; get; }
+    }
+
+    class InsiderWithCtorDestYx
+    {
+        public AutoCtorDestYx X { set; get; }
+    }
 
     #endregion TestClasses
 }

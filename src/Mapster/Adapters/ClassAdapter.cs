@@ -54,7 +54,7 @@ namespace Mapster.Adapters
         {
             //new TDestination(src.Prop1, src.Prop2)
                         
-            if (arg.GetConstructUsing() != null || arg.Settings.MapToConstructor == null)
+            if (arg.DestinationType.isDefaultCtor() || arg.GetConstructUsing() != null && arg.Settings.MapToConstructor == null)
                 return base.CreateInstantiationExpression(source, destination, arg);
 
             ClassMapping? classConverter;
@@ -104,14 +104,22 @@ namespace Mapster.Adapters
             Dictionary<LambdaExpression, Tuple<List<Expression>, Expression>>? conditions = null;
             foreach (var member in members)
             {
-                if (!member.UseDestinationValue && member.DestinationMember.SetterModifier == AccessModifier.None)
-                    continue;
-
                 var destMember = arg.MapType == MapType.MapToTarget || member.UseDestinationValue
                     ? member.DestinationMember.GetExpression(destination)
                     : null;
 
                 var adapt = CreateAdaptExpression(member.Getter, member.DestinationMember.Type, arg, member, destMember);
+
+                if (!member.UseDestinationValue && member.DestinationMember.SetterModifier == AccessModifier.None)
+                {
+                    if (member.DestinationMember is PropertyModel && arg.MapType == MapType.MapToTarget)
+                        adapt = SetValueTypeAutoPropertyByReflection(member, adapt, classModel);
+                    else
+                        continue;
+                    if (adapt == Expression.Empty())
+                        continue;
+                }
+              
                 if (!member.UseDestinationValue)
                 {
                     if (arg.Settings.IgnoreNullValues == true && member.Getter.CanBeNull())
@@ -132,10 +140,14 @@ namespace Mapster.Adapters
                         //Todo Try catch block should be removed after pull request approved
                         try
                         {
-                            var destinationPropertyInfo = (PropertyInfo)member.DestinationMember.Info!;
-                            adapt = destinationPropertyInfo.IsInitOnly()
-                                ? SetValueByReflection(member, (MemberExpression)adapt)
-                                : member.DestinationMember.SetExpression(destination, adapt);
+                            if (member.DestinationMember.SetterModifier != AccessModifier.None)
+                            {
+                                var destinationPropertyInfo = (PropertyInfo)member.DestinationMember.Info!;
+                                adapt = destinationPropertyInfo.IsInitOnly()
+                                    ? SetValueByReflection(member, (MemberExpression)adapt)
+                                    : member.DestinationMember.SetExpression(destination, adapt);
+                            }
+
                         }
                         catch (Exception e)
                         {
