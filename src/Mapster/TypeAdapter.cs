@@ -26,6 +26,7 @@ namespace Mapster
         /// <typeparam name="TDestination">Destination type.</typeparam>
         /// <param name="source">Source object to adapt.</param>
         /// <returns>Adapted destination type.</returns>
+        [return: NotNullIfNotNull(nameof(source))]
         public static TDestination? Adapt<TDestination>(this object? source)
         {
             return Adapt<TDestination>(source, TypeAdapterConfig.GlobalSettings);
@@ -38,6 +39,7 @@ namespace Mapster
         /// <param name="source">Source object to adapt.</param>
         /// <param name="config">Configuration</param>
         /// <returns>Adapted destination type.</returns>
+        [return: NotNullIfNotNull(nameof(source))]
         public static TDestination? Adapt<TDestination>(this object? source, TypeAdapterConfig config)
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
