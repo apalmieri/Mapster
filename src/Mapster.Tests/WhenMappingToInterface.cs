@@ -3,6 +3,7 @@ using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Mapster.Tests
 {
@@ -206,9 +207,14 @@ namespace Mapster.Tests
 
             var ex = Should.Throw<CompileException>(() => dto.Adapt<INotVisibleInterface>());
             ex.InnerException.ShouldBeOfType<InvalidOperationException>();
-            ex.InnerException.Message.ShouldContain("not accessible", "Correct InvalidOperationException must be thrown.");
+            // Not an expert in ShouldBe, so I had to change the code below
+            //ex.InnerException.Message.ShouldContain("", "Correct InvalidOperationException must be thrown.");
+            if (!ex.InnerException.Message.Contains("not accessible"))
+            {
+                throw new InvalidOperationException("Correct InvalidOperationException must be thrown.");
+            }
         }
-        
+
         [TestMethod]
         public void MapToInheritedInterfaceWithoutProperties()
         {            
@@ -233,6 +239,53 @@ namespace Mapster.Tests
             idto.Name.ShouldBe(dto.Name);
             idto.DateOfBirth.ShouldBe(default);
             idto.UnmappedSource.ShouldBeNull();
+        }
+
+        [TestMethod]
+        public void MappingToInterfaceWithWritableProps()
+        {
+            var source = new PropertyInitializationTestSource { Property1 = 42, Property2 = 43 };
+            var target = source.Adapt<IInterfaceWithWritableProperties>();
+
+            target.ShouldNotBeNull();
+            target.ShouldSatisfyAllConditions(
+                () => target.Property1.ShouldBe(source.Property1),
+                () => target.Property2.ShouldBe(source.Property2)
+            );
+        }
+
+        [TestMethod]
+        public void MappingToInteraceWithReadonlyProps_AllPropsInitialized()
+        {
+            var source = new PropertyInitializationTestSource { Property1 = 42, Property2 = 43 };
+            var target = source.Adapt<IReadonlyInterface>();
+
+            target.ShouldNotBeNull();
+            target.ShouldSatisfyAllConditions(
+                () => target.Property1.ShouldBe(source.Property1),
+                () => target.Property2.ShouldBe(source.Property2)
+            );
+        }
+
+        [TestMethod]
+        public void MappingToInterface_VerifyReadonlyPropsInterfaceRule()
+        {
+            SampleInterfaceCls source = new SampleInterfaceCls
+            {
+                ActivityData = new SampleActivityData
+                {
+                    Data = new SampleActivityParsedData
+                    {
+                        Steps = new List<string> { "A", "B", "C" }
+                    }
+                }
+            };
+
+            SampleInterfaceCls target = source.Adapt<SampleInterfaceCls>();
+            target.ShouldNotBeNull();
+            target.ShouldSatisfyAllConditions(
+                () => target.ActivityData.ShouldBe(source.ActivityData)
+            );
         }
 
         public interface IInheritedDtoWithoutProperties : IInheritedDto
@@ -325,5 +378,60 @@ namespace Mapster.Tests
             public IEnumerable<int> Ints { get; set; }
             public int[] IntArr { get; set; }
         }
+
+        public interface IReadonlyInterface
+        {
+            int Property1 { get; }
+            int Property2 { get; }
+        }
+
+        public interface IInterfaceWithWritableProperties
+        {
+            int Property1 { get; set; }
+            int Property2 { get; }
+        }
+
+        public class PropertyInitializationTestSource
+        {
+            public int Property1 { get; set; }
+            public int Property2 { get; set; }
+        }
+        
+        public interface IActivityData
+        {
+    
+        }
+
+        public class SampleInterfaceCls
+        {
+            [Newtonsoft.Json.JsonIgnore]
+            public IActivityData? ActivityData { get; set; }
+
+            public SampleInterfaceCls()
+            {
+        
+            }
+
+            public SampleInterfaceCls(IActivityData data)
+            {
+                SetActivityData(data);
+            }
+    
+            public void SetActivityData(IActivityData data)
+            {
+                ActivityData = data;
+            }
+        }
+        
+        public class SampleActivityData : IActivityData
+        {
+            public SampleActivityParsedData Data { get; set; }
+        }
+        
+        public class SampleActivityParsedData
+        {
+            public List<string> Steps { get; set; } = new List<string>();
+        }
+
     }
 }

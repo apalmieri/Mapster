@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using MapsterMapper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
@@ -44,15 +45,15 @@ namespace Mapster.Async.Tests
             }
         }
 
-        [TestMethod, ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
         public void Sync()
         {
             TypeAdapterConfig<Poco, Dto>.NewConfig()
                 .AfterMappingAsync(async dest => { dest.Name = await GetName(); });
 
             var poco = new Poco {Id = "foo"};
-            var dto = poco.Adapt<Dto>();
-            dto.Name.ShouldBe("bar");
+
+            Should.Throw<InvalidOperationException>(() => poco.Adapt<Dto>());
         }
 
         [TestMethod]
@@ -85,6 +86,22 @@ namespace Mapster.Async.Tests
             dtoOwnership.Car.Make.ShouldBe("Car Maker Inc");
             dtoOwnership.Owner.ShouldNotBeNull();
             dtoOwnership.Owner.Name.ShouldBe("John Doe");
+        }
+
+        [TestMethod]
+        public async Task SimplyAsync()
+        {
+            TypeAdapterConfig<Poco, Dto>.NewConfig()
+                .AfterMappingAsync(async dest => { dest.Name = await GetName(); });
+
+            var poco = new Poco { Id = "foo" };
+            var dto = await poco.AdaptAsync<Dto>();
+            dto.Name.ShouldBe("bar");
+
+            IMapper instance = new Mapper();
+
+            var destination = await instance.MapAsync<Dto>(poco);
+            destination.Name.ShouldBe("bar");
         }
 
         private static async Task<string> GetName()

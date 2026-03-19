@@ -1,16 +1,18 @@
 using System.Linq.Expressions;
 using ExpressionDebugger;
+#if NET6_0
 using Hellang.Middleware.ProblemDetails;
+#endif
 using Mapster;
 using Sample.AspNetCore.Controllers;
 using Sample.AspNetCore.Models;
 using MapsterMapper;
-using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.OData;
 
 namespace Sample.AspNetCore
 {
@@ -27,6 +29,7 @@ namespace Sample.AspNetCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(opts => opts.EnableEndpointRouting = false)
+                .AddOData(options => options.Select().Filter().OrderBy())
                 .AddNewtonsoftJson();
             services.AddDbContext<SchoolContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -34,7 +37,6 @@ namespace Sample.AspNetCore
             services.AddScoped<IMapper, ServiceMapper>();
             services.AddSingleton<NameFormatter>();
             services.AddProblemDetails();
-            services.AddOData();
         }
 
         private static TypeAdapterConfig GetConfiguredMappingConfig()
@@ -69,14 +71,12 @@ namespace Sample.AspNetCore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            #if NET6_0
             app.UseProblemDetails();
+            #endif
             app.UseRouting();
             app.UseAuthorization();
-            app.UseMvc(builder =>
-            {
-                builder.EnableDependencyInjection();
-                builder.Select().Expand().Filter().OrderBy().MaxTop(1000).Count();
-            });
+            app.UseMvc();
         }
     }
 }

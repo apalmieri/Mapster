@@ -16,6 +16,10 @@ namespace Mapster.Tests
         [TestMethod]
         public void After_Mapping()
         {
+            TypeAdapterConfig<SimplePocoBaseBase, SimpleDto>.NewConfig()
+                .AfterMapping((src, dest) => dest.Name += "!!!");
+            TypeAdapterConfig<SimplePocoBase, SimpleDto>.NewConfig()
+                .AfterMapping((src, dest) => dest.Name += "***");
             TypeAdapterConfig<SimplePoco, SimpleDto>.NewConfig()
                 .AfterMapping((src, dest) => dest.Name += "xxx");
 
@@ -27,7 +31,7 @@ namespace Mapster.Tests
             var result = TypeAdapter.Adapt<SimpleDto>(poco);
 
             result.Id.ShouldBe(poco.Id);
-            result.Name.ShouldBe(poco.Name + "xxx");
+            result.Name.ShouldBe(poco.Name + "!!!***xxx");
         }
 
         [TestMethod]
@@ -46,7 +50,6 @@ namespace Mapster.Tests
             result.IsValidated.ShouldBeTrue();
         }
 
-
         [TestMethod]
         public void No_Compile_Error_When_ConstructUsing_ForDestinationType()
         {
@@ -55,16 +58,58 @@ namespace Mapster.Tests
             TypeAdapterConfig.GlobalSettings.Compile();
         }
 
+        [TestMethod]
+        public void MapToType_Support_Destination_Parameter()
+        {
+            TypeAdapterConfig<SimplePoco, SimpleDto>.NewConfig()
+                .AfterMapping((src, result, destination) => result.Name += $"{destination.Name}xxx");
+
+            var poco = new SimplePoco
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+            };
+
+            // check expression is successfully compiled
+            Should.Throw<NullReferenceException>(() => poco.Adapt<SimpleDto>());
+        }
+
+        [TestMethod]
+        public void MapToTarget_Support_Destination_Parameter()
+        {
+            TypeAdapterConfig<SimplePoco, SimpleDto>.NewConfig()
+                .ConstructUsing((simplePoco, dto) => new SimpleDto())
+                .AfterMapping((src, result, destination) => result.Name += $"{destination.Name}xxx");
+
+            var poco = new SimplePoco
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+            };
+            var oldDto = new SimpleDto { Name = "zzz", };
+            var result = poco.Adapt(oldDto);
+
+            result.ShouldNotBeSameAs(oldDto);
+            result.Id.ShouldBe(poco.Id);
+            result.Name.ShouldBe(poco.Name + "zzzxxx");
+        }
 
         public interface IValidatable
         {
             void Validate();
         }
 
-        public class SimplePoco
+        public class SimplePocoBaseBase
+        {
+            public string Name { get; set; }
+        }
+        public class SimplePocoBase : SimplePocoBaseBase
+        {
+        }
+
+        public class SimplePoco : SimplePocoBase
         {
             public Guid Id { get; set; }
-            public string Name { get; set; }
         }
 
         public class SimpleDto : IValidatable

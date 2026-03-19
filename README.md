@@ -1,31 +1,88 @@
-![Mapster Icon](https://cloud.githubusercontent.com/assets/5763993/26522718/d16f3e42-4330-11e7-9b78-f8c7402624e7.png)
+![Mapster Icon](https://raw.githubusercontent.com/MapsterMapper/Mapster/master/docs/images/mapster-logo.svg)
 
-## Mapster - The Mapper of Your Domain
+# Mapster - The Mapper of Your Domain
+
 Writing mapping methods is a machine job. Do not waste your time, let Mapster do it.
 
-[![NuGet](https://img.shields.io/nuget/v/Mapster.svg)](https://www.nuget.org/packages/Mapster)
+## NuGet Sources
 
-### Get it
-```
-PM> Install-Package Mapster
+### NuGet Packages
+
+| Package | Stable | Pre-release |
+|---------|--------|-------------|
+| **Mapster** | [![Mapster](https://img.shields.io/nuget/v/Mapster.svg?label=Mapster&color=informational)](https://www.nuget.org/packages/Mapster/latest) | [![Mapster](https://img.shields.io/nuget/vpre/Mapster.svg?label=Mapster&color=orange)](https://www.nuget.org/packages/Mapster) |
+| **Mapster.Core** | [![Mapster.Core](https://img.shields.io/nuget/v/Mapster.Core.svg?label=Mapster.Core&color=informational)](https://www.nuget.org/packages/Mapster.Core/latest) | [![Mapster.Core](https://img.shields.io/nuget/vpre/Mapster.Core.svg?label=Mapster.Core&color=orange)](https://www.nuget.org/packages/Mapster.Core) |
+| **Mapster.DependencyInjection** | [![Mapster.DependencyInjection](https://img.shields.io/nuget/v/Mapster.DependencyInjection.svg?label=Mapster.DependencyInjection&color=informational)](https://www.nuget.org/packages/Mapster.DependencyInjection/latest) | [![Mapster.DependencyInjection](https://img.shields.io/nuget/vpre/Mapster.DependencyInjection.svg?label=Mapster.DependencyInjection&color=orange)](https://www.nuget.org/packages/Mapster.DependencyInjection) |
+| **Mapster.EFCore** | [![Mapster.EFCore](https://img.shields.io/nuget/v/Mapster.EFCore.svg?label=Mapster.EFCore&color=informational)](https://www.nuget.org/packages/Mapster.EFCore/latest) | [![Mapster.EFCore](https://img.shields.io/nuget/vpre/Mapster.EFCore.svg?label=Mapster.EFCore&color=orange)](https://www.nuget.org/packages/Mapster.EFCore) |
+| **Mapster.EF6** | [![Mapster.EF6](https://img.shields.io/nuget/v/Mapster.EF6.svg?label=Mapster.EF6&color=informational)](https://www.nuget.org/packages/Mapster.EF6/latest) | [![Mapster.EF6](https://img.shields.io/nuget/vpre/Mapster.EF6.svg?label=Mapster.EF6&color=orange)](https://www.nuget.org/packages/Mapster.EF6) |
+| **Mapster.JsonNet** | [![Mapster.JsonNet](https://img.shields.io/nuget/v/Mapster.JsonNet.svg?label=Mapster.JsonNet&color=informational)](https://www.nuget.org/packages/Mapster.JsonNet/latest) | [![Mapster.JsonNet](https://img.shields.io/nuget/vpre/Mapster.JsonNet.svg?label=Mapster.JsonNet&color=orange)](https://www.nuget.org/packages/Mapster.JsonNet) |
+| **Mapster.Immutable** | [![Mapster.Immutable](https://img.shields.io/nuget/v/Mapster.Immutable.svg?label=Mapster.Immutable&color=informational)](https://www.nuget.org/packages/Mapster.Immutable/latest) | [![Mapster.Immutable](https://img.shields.io/nuget/vpre/Mapster.Immutable.svg?label=Mapster.Immutable&color=orange)](https://www.nuget.org/packages/Mapster.Immutable) |
+| **Mapster.Diagnostics** | [![Mapster.Diagnostics](https://img.shields.io/nuget/v/Mapster.Diagnostics.svg?label=Mapster.Diagnostics&color=informational)](https://www.nuget.org/packages/Mapster.Diagnostics/latest) |  |
+| **ExpressionDebugger** | [![ExpressionDebugger](https://img.shields.io/nuget/v/ExpressionDebugger.svg?label=ExpressionDebugger&color=informational)](https://www.nuget.org/packages/ExpressionDebugger/latest) |  |
+
+### DotNet Tools
+
+| Tool | Stable | Pre-release |
+|------|--------|-------------|
+| **Mapster.Tool** | [![Mapster.Tool](https://img.shields.io/nuget/v/Mapster.Tool.svg?label=Mapster.Tool&color=informational)](https://www.nuget.org/packages/Mapster.Tool/latest) | [![Mapster.Tool](https://img.shields.io/nuget/vpre/Mapster.Tool.svg?label=Mapster.Tool&color=orange)](https://www.nuget.org/packages/Mapster.Tool) |
+
+
+## Installation
+
+Install Mapster with the NuGet CLI:
+
+```Powershell
+Install-Package Mapster
 ```
 
-### Basic usage
-#### Mapping to a new object
+Or use the .NET core CLI to install Mapster:
+
+```bash
+dotnet add package Mapster --project <PROJECT_NAME>
+```
+
+## Basic usage
+
+### Mapping to a new object
+
 Mapster creates the destination object and maps values to it.
 
 ```csharp
 var destObject = sourceObject.Adapt<Destination>();
 ```
 
-#### Mapping to an existing object
+### Mapping to an existing object
+
 You create the object, Mapster maps to the object.
 
 ```csharp
 sourceObject.Adapt(destObject);
 ```
 
-#### Queryable Extensions
+### Use Mapster with Dependency Injection
+
+You can get your `IMapper` instance via dependency injection, so you do not have to change code, when migrating to mapster from automapper!
+
+**Just add Mapster to service collection:**
+
+```csharp
+services.AddMapster();
+```
+
+**And use it with DI in your Project:**
+
+```csharp
+public class Test
+{
+    public Test(IMapper mapper)
+    {
+        var sourceObject = mapper.Adapt<Destination>();
+    }
+}
+```
+
+### Queryable Extensions
+
 Mapster also provides extensions to map queryables.
 
 ```csharp
@@ -36,17 +93,18 @@ using (MyDbContext context = new MyDbContext())
 
     // Versus creating by hand:
     var destinations = context.Sources.Select(c => new Destination {
-        Id = p.Id,
-        Name = p.Name,
-        Surname = p.Surname,
+        Id = c.Id,
+        Name = c.Name,
+        Surname = c.Surname,
         ....
     })
     .ToList();
 }
 ```
 
-#### Generating models & mappers
-No need to write your own DTO classes. Mapster provides [Mapster.Tool](https://github.com/MapsterMapper/Mapster/wiki/Mapster.Tool) to help you generating models. And if you would like to have explicit mapping, Mapster also generates mapper class for you.
+### Generating models & mappers
+
+No need to write your own DTO classes. Mapster provides [Mapster.Tool](https://mapstermapper.github.io/Mapster/articles/tools/mapster-tool/Mapster-Tool-Overview.html) to help you generating models. And if you would like to have explicit mapping, Mapster also generates mapper class for you.
 
 ```csharp
 [AdaptTo("[name]Dto"), GenerateMapper]
@@ -55,7 +113,8 @@ public class Student {
 }
 ```
 
-Then Mapster will generate:
+Then Mapster will generate for you:
+
 ```csharp
 public class StudentDto {
     ...
@@ -67,22 +126,26 @@ public static class StudentMapper {
 }
 ```
 
-### What's new
-- [Fluent API for code generation](https://github.com/MapsterMapper/Mapster/wiki/Fluent-API-Code-generation)
-- [Automatically generate mapping code on build](https://github.com/MapsterMapper/Mapster/wiki/Mapster.Tool)
-- [Define setting to nested mapping](https://github.com/MapsterMapper/Mapster/wiki/Config-for-nested-mapping)
-- [`ISet`, `IDictionary`, `IReadOnlyDictionary` support](https://github.com/MapsterMapper/Mapster/wiki/Data-types#collections)
-- [`EmptyCollectionIfNull`, `CreateNewIfNull` DestinationTransform](https://github.com/MapsterMapper/Mapster/wiki/Setting-values#transform-value)
+## What's new
+
+- [Fluent API for code generation](https://mapstermapper.github.io/Mapster/articles/tools/mapster-tool/Fluent-API-Code-generation.html)
+- [Automatically generate mapping code on build](https://mapstermapper.github.io/Mapster/articles/tools/mapster-tool/Mapster-Tool-Overview.html)
+- [Define setting to nested mapping](https://mapstermapper.github.io/Mapster/articles/configuration/Config-for-nested-mapping.html)
+- [`ISet`, `IDictionary`, `IReadOnlyDictionary` support](https://mapstermapper.github.io/Mapster/articles/mapping/Data-types.html#collections)
+- [`EmptyCollectionIfNull`, `CreateNewIfNull` DestinationTransform](https://mapstermapper.github.io/Mapster/articles/settings/Setting-values.html#transform-value)
 - [Several fixes](https://github.com/MapsterMapper/Mapster/releases/)
 - New plugins
-  - [Immutable collection support](https://github.com/MapsterMapper/Mapster/wiki/Immutable)
+  - [Immutable collection support](https://mapstermapper.github.io/Mapster/articles/packages/Immutable.html)
 
-### Why Mapster?
-#### Performance & Memory efficient
+## Why Mapster?
+
+### Performance & Memory efficient
+
 Mapster was designed to be efficient on both speed and memory. You could gain a 4x performance improvement whilst using only 1/3 of memory.
-And you could gain up to 12x faster performance with
-- [Roslyn Compiler](https://github.com/MapsterMapper/Mapster/wiki/Debugging)
-- [FEC](https://github.com/MapsterMapper/Mapster/wiki/FastExpressionCompiler)
+And you could gain up to 12x faster performance with:
+
+- [Roslyn Compiler](https://mapstermapper.github.io/Mapster/articles/packages/ExpressionDebugging.html)
+- [FEC](https://mapstermapper.github.io/Mapster/articles/packages/FastExpressionCompiler.html)
 - Code generation
 
 |                    Method |      Mean |    StdDev |     Error |      Gen 0 | Gen 1 | Gen 2 | Allocated |
@@ -94,35 +157,38 @@ And you could gain up to 12x faster performance with
 |     'ExpressMapper 1.9.1' | 205.78 ms |  5.357 ms |  8.098 ms | 59000.0000 |     - |     - | 236.51 MB |
 |       'AutoMapper 10.0.0' | 420.97 ms | 23.266 ms | 35.174 ms | 87000.0000 |     - |     - | 350.95 MB |
 
+### Step into debugging
 
+[Step-into debugging](https://mapstermapper.github.io/docs/packages/Diagnostics.html) lets you debug your mapping and inspect values just like your code.
 
-#### Step into debugging
+![inspect-generated-source-code-while-debugging](https://cloud.githubusercontent.com/assets/5763993/26521773/180427b6-431b-11e7-9188-10c01fa5ba5c.png)
 
-[Step-into debugging](https://github.com/MapsterMapper/Mapster/wiki/Debugging) lets you debug your mapping and inspect values just like your code.
-![image](https://cloud.githubusercontent.com/assets/5763993/26521773/180427b6-431b-11e7-9188-10c01fa5ba5c.png)
+### Code Generation
 
-#### Code Generation
 Code generation allows you to
+
 - Validate mapping at compile time
 - Getting raw performance
 - Seeing your mapping code & debugging
 - Finding usage of your models' properties
 
 There are currently two tools which you can choose based on your preferences.
-* [Mapster.Tool](https://github.com/MapsterMapper/Mapster/wiki/Mapster.Tool) NEW!
-* [TextTemplate](https://github.com/MapsterMapper/Mapster/wiki/TextTemplate)
 
-### Change logs
+- [Mapster.Tool](https://mapstermapper.github.io/Mapster/articles/tools/mapster-tool/Mapster-Tool-Overview.html) _**NEW!**_
+- [TextTemplate](https://mapstermapper.github.io/Mapster/articles/tools/TextTemplate.html)
+
+## Change logs
+
 https://github.com/MapsterMapper/Mapster/releases
 
-### Usages
-* [English](https://github.com/MapsterMapper/Mapster/wiki)
-* [中文文档](https://github.com/rivenfx/Mapster-docs) (sp thx to [@staneee](https://github.com/staneee))
+## Usage Guides with Translations
 
-### Acknowledgements
+- [English](https://github.com/MapsterMapper/Mapster/wiki)
+- [中文文档](https://github.com/rivenfx/Mapster-docs) (sp thx to [@staneee](https://github.com/staneee))
+
+## Acknowledgements
 
 [JetBrains](https://www.jetbrains.com/?from=Mapster) kindly provides Mapster with a free open-source licence for their Resharper and Rider.
+
 - **Resharper** makes Visual Studio a much better IDE
 - **Rider** is fast & powerful cross platform .NET IDE
-
-![image](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/JetBrains_Logo_2016.svg/121px-JetBrains_Logo_2016.svg.png)

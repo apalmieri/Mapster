@@ -15,32 +15,37 @@ namespace Mapster
         public TypeAdapterSettings Settings { get; set; }
         public CompileContext Context { get; set; }
         public bool UseDestinationValue { get; set; }
+        public bool? ConstructorMapping { get; set; }
 
         private HashSet<string>? _srcNames;
         internal HashSet<string> GetSourceNames()
         {
-            return _srcNames ??= (from it in Settings.Resolvers
+            return _srcNames ??= new HashSet<string>(
+                from it in Settings.Resolvers
                 where it.SourceMemberName != null
-                select it.SourceMemberName!.Split('.').First()).ToHashSet();
+                select it.SourceMemberName!.Split('.').First(),
+                StringComparer.Ordinal);
         }
 
         private HashSet<string>? _destNames;
-        internal HashSet<string> GetDestinationNames()
+        internal HashSet<string> GetDestinationNames(bool split = true)
         {
-            return _destNames ??= (from it in Settings.Resolvers
+            return _destNames ??= new HashSet<string>(
+                from it in Settings.Resolvers
                 where it.DestinationMemberName != null
-                select it.DestinationMemberName.Split('.').First()).ToHashSet();
+                select split
+                    ? it.DestinationMemberName.Split('.').First()
+                    : it.DestinationMemberName,
+                StringComparer.Ordinal);
         }
 
         private bool _fetchConstructUsing;
         private LambdaExpression? _constructUsing;
         internal LambdaExpression? GetConstructUsing()
         {
-            if (!_fetchConstructUsing)
-            {
-                _constructUsing = Settings.ConstructUsingFactory?.Invoke(this);
-                _fetchConstructUsing = true;
-            }
+            if (_fetchConstructUsing) return _constructUsing;
+            _constructUsing = Settings.ConstructUsingFactory?.Invoke(this);
+            _fetchConstructUsing = true;
             return _constructUsing;
         }
     }

@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using AutoMapper;
-using Benchmark.Classes;
+﻿using Benchmark.Classes;
 using FastExpressionCompiler;
 using Mapster;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Benchmark
 {
     public static class TestAdaptHelper
     {
-        private static readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<Foo, Foo>();
-            cfg.CreateMap<Address, Address>();
-            cfg.CreateMap<Address, AddressDTO>();
-            cfg.CreateMap<Customer, CustomerDTO>();
-        }));
+        //private static readonly IMapper _mapper = new Mapper(new MapperConfiguration(cfg =>
+        //{
+        //    cfg.CreateMap<Foo, Foo>();
+        //    cfg.CreateMap<Address, Address>();
+        //    cfg.CreateMap<Address, AddressDTO>();
+        //    cfg.CreateMap<Customer, CustomerDTO>();
+        //}));
+
+        public const string MapsterVersion = "10.0.0";
+        public const string AutoMapperVersion = "13.0.0";
+        public const string ExpressionTranslatorVersion = "2.5.0";
+        public const string ExpressionMapperVersion = "1.9.1";
 
         public static Customer SetupCustomerInstance()
         {
@@ -88,12 +92,12 @@ namespace Benchmark
         }
         public static void ConfigureExpressMapper(Foo fooInstance)
         {
-            ExpressMapper.Mapper.Map<Foo, Foo>(fooInstance); //exercise
+            //ExpressMapper.Mapper.Map<Foo, Foo>(fooInstance); //exercise
         }
-        public static void ConfigureAutoMapper(Foo fooInstance)
-        {
-            _mapper.Map<Foo, Foo>(fooInstance); //exercise
-        }
+        //public static void ConfigureAutoMapper(Foo fooInstance)
+        //{
+        //    _mapper.Map<Foo, Foo>(fooInstance); //exercise
+        //}
 
         public static void ConfigureMapster(Customer customerInstance, MapsterCompilerType type)
         {
@@ -103,12 +107,12 @@ namespace Benchmark
         }
         public static void ConfigureExpressMapper(Customer customerInstance)
         {
-            ExpressMapper.Mapper.Map<Customer, CustomerDTO>(customerInstance);  //exercise
+            //ExpressMapper.Mapper.Map<Customer, CustomerDTO>(customerInstance);  //exercise
         }
-        public static void ConfigureAutoMapper(Customer customerInstance)
-        {
-            _mapper.Map<Customer, CustomerDTO>(customerInstance);    //exercise
-        }
+        //public static void ConfigureAutoMapper(Customer customerInstance)
+        //{
+        //    _mapper.Map<Customer, CustomerDTO>(customerInstance);    //exercise
+        //}
 
         public static void TestMapsterAdapter<TSrc, TDest>(TSrc item, int iterations)
             where TSrc : class
@@ -121,24 +125,24 @@ namespace Benchmark
             where TSrc : class
             where TDest : class, new()
         {
-            Loop(item, get => ExpressMapper.Mapper.Map<TSrc, TDest>(get), iterations);
+            //Loop(item, get => ExpressMapper.Mapper.Map<TSrc, TDest>(get), iterations);
         }
 
-        public static void TestAutoMapper<TSrc, TDest>(TSrc item, int iterations)
-            where TSrc : class
-            where TDest : class, new()
-        {
-            Loop(item, get => _mapper.Map<TSrc, TDest>(get), iterations);
-        }
+        //public static void TestAutoMapper<TSrc, TDest>(TSrc item, int iterations)
+        //    where TSrc : class
+        //    where TDest : class, new()
+        //{
+        //    Loop(item, get => _mapper.Map<TSrc, TDest>(get), iterations);
+        //}
 
         public static void TestCodeGen(Foo item, int iterations)
         {
-            Loop(item, get => FooMapper.Map(get), iterations);
+            //Loop(item, get => FooMapper.Map(get), iterations);
         }
 
         public static void TestCodeGen(Customer item, int iterations)
         {
-            Loop(item, get => CustomerMapper.Map(get), iterations);
+            //Loop(item, get => CustomerMapper.Map(get), iterations);
         }
 
         private static void Loop<T>(T item, Action<T> action, int iterations)

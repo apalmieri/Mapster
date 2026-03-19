@@ -25,6 +25,12 @@ namespace Mapster.Tool
         [Option('b', "baseNamespace", Required = false, HelpText = "Provide base namespace to generate nested output & namespace")]
         public string? BaseNamespace { get; set; }
 
+        [Option('s', "skipExisting", Required = false, HelpText = "Set true to skip generating already existing files")]
+        public bool SkipExistingFiles { get; set; }
+
+        [Option('N', "nullableDirective", Required = false, HelpText = "Set true to add \"#nullable enable\" to the top of generated model files")]
+        public bool GenerateNullableDirective { get; set; }
+
         [Usage(ApplicationAlias = "dotnet mapster model")]
         public static IEnumerable<Example> Examples =>
             new List<Example>

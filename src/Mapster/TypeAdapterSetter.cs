@@ -1,21 +1,26 @@
-﻿using System;
+﻿using Mapster.Adapters;
+using Mapster.Models;
+using Mapster.Utils;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Mapster.Adapters;
-using Mapster.Models;
-using Mapster.Utils;
 
 namespace Mapster
 {
+    [AdaptWith(AdaptDirectives.DestinationAsRecord)]
     public class TypeAdapterSetter
     {
+        protected const string SourceParameterName = "source";
+        protected const string ResultParameterName = "result";
+        protected const string DestinationParameterName = "destination";
+
         public readonly TypeAdapterSettings Settings;
         public readonly TypeAdapterConfig Config;
         public TypeAdapterSetter(TypeAdapterSettings settings, TypeAdapterConfig config)
         {
-            this.Settings = settings;
-            this.Config = config;
+            Settings = settings;
+            Config = config;
         }
     }
     public static class TypeAdapterSetterExtensions
@@ -264,10 +269,29 @@ namespace Mapster
             return setter;
         }
 
-        internal static TSetter Include<TSetter>(this TSetter setter, Type sourceType, Type destType) where TSetter : TypeAdapterSetter
+        public static TSetter Include<TSetter>(this TSetter setter, Type sourceType, Type destType) where TSetter : TypeAdapterSetter
         {
             setter.CheckCompiled();
 
+            Type baseSourceType = setter.Settings.SourceType ?? typeof(void);
+            Type baseDestinationType = setter.Settings.DestinationType ?? typeof(void);
+
+            if (baseSourceType.IsOpenGenericType() && baseDestinationType.IsOpenGenericType())
+            {
+                if (!sourceType.IsAssignableToGenericType(baseSourceType))
+                    throw new InvalidCastException("In order to use inherits, TSource must be inherited from TBaseSource.");
+                if (!destType.IsAssignableToGenericType(baseDestinationType))
+                    throw new InvalidCastException("In order to use inherits, TDestination must be inherited from TBaseDestination.");
+            }
+            else
+            {
+                if (!baseSourceType.GetTypeInfo().IsAssignableFrom(sourceType.GetTypeInfo()))
+                    throw new InvalidCastException("In order to use inherits, TSource must be inherited from TBaseSource.");
+
+                if (!baseDestinationType.GetTypeInfo().IsAssignableFrom(destType.GetTypeInfo()))
+                    throw new InvalidCastException("In order to use inherits, TDestination must be inherited from TBaseDestination.");
+            }
+        
             setter.Config.Rules.LockAdd(new TypeAdapterRule
             {
                 Priority = arg =>
@@ -278,6 +302,36 @@ namespace Mapster
 
             setter.Settings.Includes.Add(new TypeTuple(sourceType, destType));
 
+            return setter;
+        }
+
+        public static TSetter Inherits<TSetter>(this TSetter setter, Type baseSourceType, Type baseDestinationType) where TSetter : TypeAdapterSetter
+        {
+            setter.CheckCompiled();
+                      
+            Type derivedSourceType = setter.Settings.SourceType ?? typeof(void);
+            Type derivedDestinationType = setter.Settings.DestinationType ?? typeof(void);
+
+            if(baseSourceType.IsOpenGenericType() && baseDestinationType.IsOpenGenericType())
+            {
+                if (!derivedSourceType.IsAssignableToGenericType(baseSourceType))
+                    throw new InvalidCastException("In order to use inherits, TSource must be inherited from TBaseSource.");
+                if (!derivedDestinationType.IsAssignableToGenericType(baseDestinationType))
+                    throw new InvalidCastException("In order to use inherits, TDestination must be inherited from TBaseDestination.");
+            }
+            else
+            {
+                if (!baseSourceType.GetTypeInfo().IsAssignableFrom(derivedSourceType.GetTypeInfo()))
+                    throw new InvalidCastException("In order to use inherits, TSource must be inherited from TBaseSource.");
+
+                if (!baseDestinationType.GetTypeInfo().IsAssignableFrom(derivedDestinationType.GetTypeInfo()))
+                    throw new InvalidCastException("In order to use inherits, TDestination must be inherited from TBaseDestination.");
+            }
+
+            if (setter.Config.RuleMap.TryGetValue(new TypeTuple(baseSourceType, baseDestinationType), out var rule))
+            {
+                setter.Settings.Apply(rule.Settings);
+            }
             return setter;
         }
 
@@ -391,8 +445,8 @@ namespace Mapster
 
             Settings.BeforeMappingFactories.Add(arg =>
             {
-                var p1 = Expression.Parameter(arg.SourceType);
-                var p2 = Expression.Parameter(arg.DestinationType);
+                var p1 = Expression.Parameter(arg.SourceType, SourceParameterName);
+                var p2 = Expression.Parameter(arg.DestinationType, ResultParameterName);
                 var actionType = action.GetType();
                 var actionExp = Expression.Constant(action, actionType);
                 var invoke = Expression.Call(actionExp, "Invoke", null, p2);
@@ -407,8 +461,8 @@ namespace Mapster
 
             Settings.AfterMappingFactories.Add(arg =>
             {
-                var p1 = Expression.Parameter(arg.SourceType);
-                var p2 = Expression.Parameter(arg.DestinationType);
+                var p1 = Expression.Parameter(arg.SourceType, SourceParameterName);
+                var p2 = Expression.Parameter(arg.DestinationType, ResultParameterName);
                 var actionType = action.GetType();
                 var actionExp = Expression.Constant(action, actionType);
                 var invoke = Expression.Call(actionExp, "Invoke", null, p2);
@@ -430,16 +484,28 @@ namespace Mapster
                     throw new ArgumentException("Constructor of abstract type cannot be created", nameof(ctor));
             }
 
-            this.Settings.MapToConstructor = ctor;
+            Settings.MapToConstructor = ctor;
             return this;
         }
-        
+
+        public TypeAdapterSetter<TDestination> BeforeMappingInline(Expression<Action<TDestination>> action)
+        {
+            this.CheckCompiled();
+
+            var lambda = Expression.Lambda(action.Body,
+                Expression.Parameter(typeof(object), SourceParameterName),
+                action.Parameters[0]);
+            Settings.BeforeMappingFactories.Add(arg => lambda);
+
+            return this;
+        }
+
         public TypeAdapterSetter<TDestination> AfterMappingInline(Expression<Action<TDestination>> action)
         {
             this.CheckCompiled();
 
             var lambda = Expression.Lambda(action.Body, 
-                Expression.Parameter(typeof(object), "src"),
+                Expression.Parameter(typeof(object), SourceParameterName),
                 action.Parameters[0]);
             Settings.AfterMappingFactories.Add(arg => lambda);
             return this;
@@ -492,6 +558,11 @@ namespace Mapster
         public new TypeAdapterSetter<TSource, TDestination> MapToConstructor(ConstructorInfo ctor)
         {
             return (TypeAdapterSetter<TSource, TDestination>) base.MapToConstructor(ctor);
+        }
+
+        public new TypeAdapterSetter<TSource, TDestination> BeforeMappingInline(Expression<Action<TDestination>> action)
+        {
+            return (TypeAdapterSetter<TSource, TDestination>)base.BeforeMappingInline(action);
         }
 
         public new TypeAdapterSetter<TSource, TDestination> AfterMappingInline(Expression<Action<TDestination>> action)
@@ -577,6 +648,15 @@ namespace Mapster
             return this;
         }
 
+        public TypeAdapterSetter<TSource, TDestination> ConstructUsing(Expression<Func<TSource, TDestination?, TDestination>> constructUsing)
+        {
+            this.CheckCompiled();
+
+            Settings.ConstructUsingFactory = arg => constructUsing;
+
+            return this;
+        }
+
         public TypeAdapterSetter<TSource, TDestination> MapWith(Expression<Func<TSource, TDestination>> converterFactory, bool applySettings = false)
         {
             this.CheckCompiled();
@@ -604,6 +684,11 @@ namespace Mapster
         {
             this.CheckCompiled();
 
+            if (typeof(TSource).IsMapsterPrimitive() || typeof(TDestination).IsMapsterPrimitive())
+            {
+                this.Settings.MapToTargetPrimitive = true;
+            }
+
             if (applySettings)
             {
                 var adapter = new DelegateAdapter(converterFactory);
@@ -620,13 +705,43 @@ namespace Mapster
 
             Settings.BeforeMappingFactories.Add(arg =>
             {
-                var p1 = Expression.Parameter(arg.SourceType);
-                var p2 = Expression.Parameter(arg.DestinationType);
+                var p1 = Expression.Parameter(arg.SourceType, SourceParameterName);
+                var p2 = Expression.Parameter(arg.DestinationType, ResultParameterName);
                 var actionType = action.GetType();
                 var actionExp = Expression.Constant(action, actionType);
                 var invoke = Expression.Call(actionExp, "Invoke", null, p1, p2);
                 return Expression.Lambda(invoke, p1, p2);
             });
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies a custom action to be executed before mapping has completed.
+        /// </summary>
+        /// <param name="action">
+        /// The action to be executed. The action must have the following signature:<br/>
+        /// <para>void Action(TSource source, TDestination result, TDestination? destination)</para>
+        /// Where *source* is the source object, *result* is the final mapping destination and *destination* is the optional target object (e.g. var result = source.Adapt(destination)).
+        /// </param>
+        /// <returns>
+        /// The current <see cref="TypeAdapterSetter{TSource, TDestination}"/> instance.
+        /// </returns>
+        public TypeAdapterSetter<TSource, TDestination> BeforeMapping(Action<TSource, TDestination, TDestination?> action)
+        {
+            this.CheckCompiled();
+
+            Settings.BeforeMappingFactories.Add(arg =>
+            {
+                var p1 = Expression.Parameter(arg.SourceType, SourceParameterName);
+                var p2 = Expression.Parameter(arg.DestinationType, ResultParameterName);
+                var p3 = Expression.Parameter(arg.DestinationType, DestinationParameterName);
+                var actionType = action.GetType();
+                var actionExp = Expression.Constant(action, actionType);
+                var invoke = Expression.Call(actionExp, "Invoke", null, p1, p2, p3);
+
+                return Expression.Lambda(invoke, p1, p2, p3);
+            });
+
             return this;
         }
 
@@ -636,13 +751,43 @@ namespace Mapster
 
             Settings.AfterMappingFactories.Add(arg =>
             {
-                var p1 = Expression.Parameter(arg.SourceType);
-                var p2 = Expression.Parameter(arg.DestinationType);
+                var p1 = Expression.Parameter(arg.SourceType, SourceParameterName);
+                var p2 = Expression.Parameter(arg.DestinationType, ResultParameterName);
                 var actionType = action.GetType();
                 var actionExp = Expression.Constant(action, actionType);
                 var invoke = Expression.Call(actionExp, "Invoke", null, p1, p2);
                 return Expression.Lambda(invoke, p1, p2);
             });
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies a custom action to be executed after mapping has completed.
+        /// </summary>
+        /// <param name="action">
+        /// The action to be executed. The action must have the following signature:<br/>
+        /// <para>void Action(TSource source, TDestination result, TDestination? destination)</para>
+        /// Where *source* is the source object, *result* is the final mapping destination and *destination* is the optional target object (e.g. var result = source.Adapt(destination)).
+        /// </param>
+        /// <returns>
+        /// The current <see cref="TypeAdapterSetter{TSource, TDestination}"/> instance.
+        /// </returns>
+        public TypeAdapterSetter<TSource, TDestination> AfterMapping(Action<TSource, TDestination, TDestination?> action)
+        {
+            this.CheckCompiled();
+
+            Settings.AfterMappingFactories.Add(arg =>
+            {
+                var p1 = Expression.Parameter(arg.SourceType, SourceParameterName);
+                var p2 = Expression.Parameter(arg.DestinationType, ResultParameterName);
+                var p3 = Expression.Parameter(arg.DestinationType, DestinationParameterName);
+                var actionType = action.GetType();
+                var actionExp = Expression.Constant(action, actionType);
+                var invoke = Expression.Call(actionExp, "Invoke", null, p1, p2, p3);
+
+                return Expression.Lambda(invoke, p1, p2, p3);
+            });
+
             return this;
         }
 
@@ -653,7 +798,26 @@ namespace Mapster
             Settings.BeforeMappingFactories.Add(arg => action);
             return this;
         }
-        
+
+        /// <summary>
+        /// Specifies a custom inline action to be executed before mapping has completed.
+        /// </summary>
+        /// <param name="action">
+        /// The action to be executed. The action must have the following signature:<br/>
+        /// <para>void Action(TSource source, TDestination result, TDestination? destination)</para>
+        /// Where *source* is the source object, *result* is the final mapping destination and *destination* is the optional target object (e.g. var result = source.Adapt(destination)).
+        /// </param>
+        /// <returns>
+        /// The current <see cref="TypeAdapterSetter{TSource, TDestination}"/> instance.
+        /// </returns>
+        public TypeAdapterSetter<TSource, TDestination> BeforeMappingInline(Expression<Action<TSource, TDestination, TDestination?>> action)
+        {
+            this.CheckCompiled();
+
+            Settings.BeforeMappingFactories.Add(arg => action);
+            return this;
+        }
+
         public TypeAdapterSetter<TSource, TDestination> AfterMappingInline(Expression<Action<TSource, TDestination>> action)
         {
             this.CheckCompiled();
@@ -661,7 +825,26 @@ namespace Mapster
             Settings.AfterMappingFactories.Add(arg => action);
             return this;
         }
-        
+
+        /// <summary>
+        /// Specifies a custom inline action to be executed after mapping has completed.
+        /// </summary>
+        /// <param name="action">
+        /// The action to be executed. The action must have the following signature:<br/>
+        /// <para>void Action(TSource source, TDestination result, TDestination? destination)</para>
+        /// Where *source* is the source object, *result* is the final mapping destination and *destination* is the optional target object (e.g. var result = source.Adapt(destination)).
+        /// </param>
+        /// <returns>
+        /// The current <see cref="TypeAdapterSetter{TSource, TDestination}"/> instance.
+        /// </returns>
+        public TypeAdapterSetter<TSource, TDestination> AfterMappingInline(Expression<Action<TSource, TDestination, TDestination?>> action)
+        {
+            this.CheckCompiled();
+
+            Settings.AfterMappingFactories.Add(arg => action);
+            return this;
+        }
+
         public TypeAdapterSetter<TSource, TDestination> Include<TDerivedSource, TDerivedDestination>()
             where TDerivedSource: class, TSource
             where TDerivedDestination: class, TDestination
@@ -673,20 +856,8 @@ namespace Mapster
         {
             this.CheckCompiled();
 
-            Type baseSourceType = typeof(TBaseSource);
-            Type baseDestinationType = typeof(TBaseDestination);
+            return this.Inherits(typeof(TBaseSource), typeof(TBaseDestination));
 
-            if (!baseSourceType.GetTypeInfo().IsAssignableFrom(typeof(TSource).GetTypeInfo()))
-                throw new InvalidCastException("In order to use inherits, TSource must be inherited from TBaseSource.");
-
-            if (!baseDestinationType.GetTypeInfo().IsAssignableFrom(typeof(TDestination).GetTypeInfo()))
-                throw new InvalidCastException("In order to use inherits, TDestination must be inherited from TBaseDestination.");
-
-            if (Config.RuleMap.TryGetValue(new TypeTuple(baseSourceType, baseDestinationType), out var rule))
-            {
-                Settings.Apply(rule.Settings);
-            }
-            return this;
         }
 
         public TypeAdapterSetter<TSource, TDestination> Fork(Action<TypeAdapterConfig> action)
@@ -707,17 +878,17 @@ namespace Mapster
 
         public TwoWaysTypeAdapterSetter<TSource, TDestination> TwoWays()
         {
-            return new TwoWaysTypeAdapterSetter<TSource, TDestination>(this.Config);
+            return new TwoWaysTypeAdapterSetter<TSource, TDestination>(Config);
         }
 
         public void Compile()
         {
-            this.Config.Compile(typeof(TSource), typeof(TDestination));
+            Config.Compile(typeof(TSource), typeof(TDestination));
         }
 
         public void CompileProjection()
         {
-            this.Config.CompileProjection(typeof(TSource), typeof(TDestination));
+            Config.CompileProjection(typeof(TSource), typeof(TDestination));
         }
     }
 
@@ -891,7 +1062,7 @@ namespace Mapster
             foreach (var member in members)
             {
                 var path = member.GetMemberPath()!;
-                this.Ignore(path);
+                Ignore(path);
             }
             return this;
         }

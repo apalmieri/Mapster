@@ -12,12 +12,12 @@ namespace Mapster.Adapters
     {
         protected virtual int Score => 0;
         protected virtual ObjectType ObjectType => ObjectType.Primitive;
-        protected virtual bool CheckExplicitMapping => this.ObjectType == ObjectType.Class;
+        protected virtual bool CheckExplicitMapping => ObjectType == ObjectType.Class;
         protected virtual bool UseTargetValue => false;
 
         public virtual int? Priority(PreCompileArgument arg)
         {
-            return CanMap(arg) ? this.Score : (int?)null;
+            return CanMap(arg) ? Score : (int?)null;
         }
 
         protected abstract bool CanMap(PreCompileArgument arg);
@@ -45,11 +45,11 @@ namespace Mapster.Adapters
         {
             var rule = new TypeAdapterRule
             {
-                Priority = this.Priority,
+                Priority = Priority,
                 Settings = new TypeAdapterSettings
                 {
-                    ConverterFactory = this.CreateAdaptFunc,
-                    ConverterToTargetFactory = this.CreateAdaptToTargetFunc,
+                    ConverterFactory = CreateAdaptFunc,
+                    ConverterToTargetFactory = CreateAdaptToTargetFunc,
                 }
             };
             DecorateRule(rule);
@@ -82,7 +82,7 @@ namespace Mapster.Adapters
 
         protected virtual Expression CreateExpressionBody(Expression source, Expression? destination, CompileArgument arg)
         {
-            if (this.CheckExplicitMapping && arg.Context.Config.RequireExplicitMapping && !arg.ExplicitMapping)
+            if (CheckExplicitMapping && arg.Context.Config.RequireExplicitMapping && !arg.ExplicitMapping)
                 throw new InvalidOperationException("Implicit mapping is not allowed (check GlobalSettings.RequireExplicitMapping) and no configuration exists");
 
             var oldMaxDepth = arg.Context.MaxDepth;
@@ -96,17 +96,24 @@ namespace Mapster.Adapters
                 }
                 if (arg.Context.MaxDepth.HasValue)
                 {
-                    if (this.ObjectType != ObjectType.Primitive && arg.Context.Depth >= arg.Context.MaxDepth.Value)
+                    if (ObjectType != ObjectType.Primitive && arg.Context.Depth >= arg.Context.MaxDepth.Value)
                         return arg.DestinationType.CreateDefault();
-                    if (this.ObjectType == ObjectType.Class)
+                    if (ObjectType == ObjectType.Class)
                         arg.Context.Depth++;
                 }
 
-                if (CanInline(source, destination, arg))
+                if(arg.Settings.MapToTargetPrimitive == true)
                 {
-                    var exp = CreateInlineExpressionBody(source, arg);
-                    if (exp != null)
-                        return exp.To(arg.DestinationType, true);
+                    // skip inline mapping
+                }
+                else
+                {
+                    if (CanInline(source, destination, arg))
+                    {
+                        var exp = CreateInlineExpressionBody(source, arg);
+                        if (exp != null)
+                            return exp.To(arg.DestinationType, true);
+                    }
                 }
 
                 if (arg.Context.Running.Count > 1 && 
@@ -143,44 +150,55 @@ namespace Mapster.Adapters
             var blocks = new List<Expression>();
             var label = Expression.Label(arg.DestinationType);
 
-            //var drvdSource = source as TDerivedSource
+            //var drvdSource = _source as TDerivedSource
             //if (drvdSource != null)
             //  return adapt<TSource, TDest>(drvdSource);
             foreach (var tuple in arg.Settings.Includes)
             {
+                TypeTuple itemTuple = tuple;
+
+                if (tuple.Source.IsOpenGenericType() && tuple.Destination.IsOpenGenericType())
+                {
+                    var genericArg = source.Type.GetGenericArguments();
+                    itemTuple = new TypeTuple(tuple.Source.MakeGenericType(genericArg), tuple.Destination.MakeGenericType(genericArg));
+                }
+                   
                 //same type, no redirect to prevent endless loop
-                if (tuple.Source == arg.SourceType)
+                if (itemTuple.Source == arg.SourceType)
                     continue;
 
                 //type is not compatible, no redirect
-                if (!arg.SourceType.GetTypeInfo().IsAssignableFrom(tuple.Source.GetTypeInfo()))
+                if (!arg.SourceType.GetTypeInfo().IsAssignableFrom(itemTuple.Source.GetTypeInfo()))
                     continue;
 
-                var drvdSource = Expression.Variable(tuple.Source);
+                var drvdSource = Expression.Variable(itemTuple.Source);
                 vars.Add(drvdSource);
 
                 var drvdSourceAssign = Expression.Assign(
                     drvdSource,
-                    Expression.TypeAs(source, tuple.Source));
+                    Expression.TypeAs(source, itemTuple.Source));
                 blocks.Add(drvdSourceAssign);
-                var cond = Expression.NotEqual(drvdSource, Expression.Constant(null, tuple.Source));
+                var cond = Expression.NotEqual(drvdSource, Expression.Constant(null, itemTuple.Source));
 
                 ParameterExpression? drvdDest = null;
                 if (destination != null)
                 {
-                    drvdDest = Expression.Variable(tuple.Destination);
+                    drvdDest = Expression.Variable(itemTuple.Destination);
                     vars.Add(drvdDest);
 
                     var drvdDestAssign = Expression.Assign(
                         drvdDest,
-                        Expression.TypeAs(destination, tuple.Destination));
+                        Expression.TypeAs(destination, itemTuple.Destination));
                     blocks.Add(drvdDestAssign);
-                    cond = Expression.AndAlso(
-                        cond,
-                        Expression.NotEqual(drvdDest, Expression.Constant(null, tuple.Destination)));
+
+                    // fix by https://github.com/MapsterMapper/Mapster/issues/794
+                    // This can be removed if it does not cause any other bugs.
+                    // cond = Expression.AndAlso(
+                    //     cond,
+                    //     Expression.NotEqual(drvdDest, Expression.Constant(null, tuple.Destination)));
                 }
 
-                var adaptExpr = CreateAdaptExpressionCore(drvdSource, tuple.Destination, arg, destination: drvdDest);
+                var adaptExpr = CreateAdaptExpressionCore(drvdSource, itemTuple.Destination, arg, destination: drvdDest);
                 var adapt = Expression.Return(label, adaptExpr);
                 var ifExpr = Expression.IfThen(cond, adapt);
                 blocks.Add(ifExpr);
@@ -195,11 +213,30 @@ namespace Mapster.Adapters
                 vars.Add(src);
                 transformedSource = src;
             }
-            var set = CreateInstantiationExpression(transformedSource, destination, arg);
-            if (destination != null && (this.UseTargetValue || arg.UseDestinationValue) && arg.GetConstructUsing()?.Parameters.Count != 2 && destination.CanBeNull())
+
+            Expression? set;
+            var requiremembers = arg.DestinationType.GetProperties()
+                .Where(x => x.GetCustomAttributes()
+                .Any(y => y.GetType().FullName == "System.Runtime.CompilerServices.RequiredMemberAttribute"));
+
+            if (requiremembers.Count() != 0)
+                set = CreateInlineExpression(source, arg, true);
+            else
+                set = CreateInstantiationExpression(transformedSource, destination, arg);
+
+            if (destination != null && (UseTargetValue || arg.UseDestinationValue) && arg.GetConstructUsing()?.Parameters.Count != 2)
             {
-                //dest ?? new TDest();
-                set = Expression.Coalesce(destination, set);
+                if (destination.CanBeNull())
+                {
+                    //dest ?? new TDest();
+                    set = Expression.Coalesce(destination, set);
+                }
+                else if (destination.Type.IsValueType && !destination.CanBeNull())
+                {
+                    // Destination already exists, and this is a struct, so simply use the destination object
+                    set = destination;
+                }
+               
             }
 
             if (set.NodeType == ExpressionType.Throw)
@@ -209,7 +246,7 @@ namespace Mapster.Adapters
             else
             {
                 //TDestination result;
-                //if (source == null)
+                //if (_source == null)
                 //  return default(TDestination);
                 if (source.CanBeNull())
                 {
@@ -228,16 +265,16 @@ namespace Mapster.Adapters
                     assignActions.Add(Expression.Assign(transformedSource, transform));
                 assignActions.Add(assign);
 
-                //before(source, result);
-                var beforeMappings = arg.Settings.BeforeMappingFactories.Select(it => InvokeMapping(it, source, result, arg, true));
+                //before(_source, result, destination);
+                var beforeMappings = arg.Settings.BeforeMappingFactories.Select(it => InvokeMapping(it, source, result, destination, arg, true)).Reverse();
                 assignActions.AddRange(beforeMappings);
 
-                //result.prop = adapt(source.prop);
+                //result.prop = adapt(_source.prop);
                 var mapping = CreateBlockExpression(transformedSource, result, arg);
                 var settingActions = new List<Expression> {mapping};
 
-                //after(source, result);
-                var afterMappings = arg.Settings.AfterMappingFactories.Select(it => InvokeMapping(it, source, result, arg, false));
+                //after(_source, result, destination);
+                var afterMappings = arg.Settings.AfterMappingFactories.Select(it => InvokeMapping(it, source, result, destination, arg, false)).Reverse();
                 settingActions.AddRange(afterMappings);
 
                 //return result;
@@ -245,13 +282,13 @@ namespace Mapster.Adapters
 
                 //using (var scope = new MapContextScope()) {
                 //  var references = scope.Context.Reference;
-                //  var key = new ReferenceTuple(source, typeof(TDestination));
+                //  var key = new ReferenceTuple(_source, typeof(TDestination));
                 //  if (references.TryGetValue(key, out var cache))
                 //      return (TDestination)cache;
                 //
                 //  var result = new TDestination();
-                //  references[source] = (object)result;
-                //  result.prop = adapt(source.prop);
+                //  references[_source] = (object)result;
+                //  result.prop = adapt(_source.prop);
                 //  return result;
                 //}
                 
@@ -312,11 +349,26 @@ namespace Mapster.Adapters
             return Expression.Block(vars, blocks);
         }
 
-        private static Expression InvokeMapping(Func<CompileArgument, LambdaExpression> mappingFactory, Expression source, Expression result, CompileArgument arg, bool setResult)
+        private static Expression InvokeMapping(
+            Func<CompileArgument, LambdaExpression> mappingFactory,
+            Expression source,
+            Expression result,
+            Expression? destination,
+            CompileArgument arg,
+            bool setResult)
         {
             var afterMapping = mappingFactory(arg);
             var args = afterMapping.Parameters;
-            var invoke = afterMapping.Apply(arg.MapType, source.To(args[0].Type), result.To(args[1].Type));
+
+            var mappingParameters = new Expression[args.Count];
+            mappingParameters[0] = source.To(args[0].Type);
+            mappingParameters[1] = result.To(args[1].Type);
+            if (args.Count >= 3)
+            {
+                mappingParameters[2] = destination?.To(args[2].Type) ?? Expression.Constant(null, args[2].Type);
+            }
+
+            var invoke = afterMapping.Apply(arg.MapType, mappingParameters);
             if (invoke.Type != typeof(void) && setResult)
                 invoke = ExpressionEx.Assign(result, invoke);
             return invoke;
@@ -324,7 +376,7 @@ namespace Mapster.Adapters
 
         protected Expression? CreateInlineExpressionBody(Expression source, CompileArgument arg)
         {
-            //source == null ? default(TDestination) : adapt(source)
+            //_source == null ? default(TDestination) : adapt(_source)
 
             var exp = CreateInlineExpression(source, arg);
             if (exp == null)
@@ -338,7 +390,8 @@ namespace Mapster.Adapters
         }
 
         protected abstract Expression CreateBlockExpression(Expression source, Expression destination, CompileArgument arg);
-        protected abstract Expression? CreateInlineExpression(Expression source, CompileArgument arg);
+        protected abstract Expression? CreateInlineExpression(Expression source, CompileArgument arg, bool IsRequiredOnly = false);
+
 
         protected Expression CreateInstantiationExpression(Expression source, CompileArgument arg)
         {
@@ -426,17 +479,46 @@ namespace Mapster.Adapters
         }
         internal Expression CreateAdaptExpression(Expression source, Type destinationType, CompileArgument arg, MemberMapping? mapping, Expression? destination = null)
         {
-            if (source.Type == destinationType &&
-                (arg.Settings.ShallowCopyForSameType == true || arg.MapType == MapType.Projection))
-                return source;
+            Expression _source;
 
-            //adapt(source);
-            var exp = CreateAdaptExpressionCore(source, destinationType, arg, mapping, destination);
+            if (arg.MapType != MapType.Projection)
+                _source = source.NullableEnumExtractor(); // Extraction Nullable Enum
+            else
+                _source = source;
 
-            //transform(adapt(source));
-            var transform = arg.Settings.DestinationTransforms.Find(it => it.Condition(exp.Type));
-            if (transform != null)
-                exp = transform.TransformFunc(exp.Type).Apply(arg.MapType, exp);
+            if (_source.Type == destinationType && arg.MapType == MapType.Projection)
+                return _source;
+
+            //adapt(_source);
+            var notUsingDestinationValue = mapping is not { UseDestinationValue: true };
+            var exp = _source.Type == destinationType && arg.Settings.ShallowCopyForSameType == true && notUsingDestinationValue &&
+                      !arg.Context.Config.HasRuleFor(_source.Type, destinationType)
+                ? _source
+                : CreateAdaptExpressionCore(_source, destinationType, arg, mapping, destination);
+
+            //transform(adapt(_source));
+            if (notUsingDestinationValue)
+            {
+                var transform = arg.Settings.DestinationTransforms.Find(it => it.Condition(exp.Type));
+                if (transform != null)
+                    exp = transform.TransformFunc(exp.Type).Apply(arg.MapType, exp);
+            }
+            else
+            {
+                if (exp.NodeType != ExpressionType.Invoke)
+                {
+                    var argExt = new CompileArgument
+                    {
+                        DestinationType = arg.DestinationType,
+                        SourceType = arg.DestinationType,
+                        MapType = MapType.MapToTarget,
+                        Context = arg.Context,
+                    };
+
+                    return CreateAdaptExpressionCore(exp, destinationType, argExt, mapping, destination).To(destinationType);
+                }
+            }
+
             return exp.To(destinationType);
         }
     }

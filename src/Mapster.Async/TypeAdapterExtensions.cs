@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MapsterMapper;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,7 +14,16 @@ namespace Mapster
             return dict.TryGetValue(key, out var value) ? value : default;
         }
 
-        public static TypeAdapterSetter<TDestination> AfterMappingAsync<TDestination>(
+
+		/// <summary>
+		/// Setup async operation
+		/// </summary>
+		/// <typeparam name="TDestination"></typeparam>
+		/// <param name="setter"></param>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
+		public static TypeAdapterSetter<TDestination> AfterMappingAsync<TDestination>(
             this TypeAdapterSetter<TDestination> setter, Func<TDestination, Task> action)
         {
             setter.AfterMapping(dest =>
@@ -27,7 +37,17 @@ namespace Mapster
             return setter;
         }
 
-        public static TypeAdapterSetter<TSource, TDestination> AfterMappingAsync<TSource, TDestination>(
+
+		/// <summary>
+		/// Setup async operation
+		/// </summary>
+		/// <typeparam name="TSource"></typeparam>
+		/// <typeparam name="TDestination"></typeparam>
+		/// <param name="setter"></param>
+		/// <param name="action"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
+		public static TypeAdapterSetter<TSource, TDestination> AfterMappingAsync<TSource, TDestination>(
             this TypeAdapterSetter<TSource, TDestination> setter, Func<TSource, TDestination, Task> action)
         {
             setter.AfterMapping((src, dest) =>
@@ -41,7 +61,14 @@ namespace Mapster
             return setter;
         }
 
-        public static async Task<TDestination> AdaptToTypeAsync<TDestination>(this IAdapterBuilder builder)
+
+		/// <summary>
+		/// Map asynchronously to destination type.
+		/// </summary>
+		/// <typeparam name="TDestination">Destination type to map.</typeparam>
+		/// <param name="builder"></param>
+		/// <returns>Type of destination object that mapped.</returns>
+		public static async Task<TDestination> AdaptToTypeAsync<TDestination>(this IAdapterBuilder builder)
         {
             var tasks = new List<Task>();
             builder.Parameters[ASYNC_KEY] = tasks;
@@ -54,7 +81,15 @@ namespace Mapster
             }
         }
 
-        public static async Task<TDestination> AdaptToAsync<TDestination>(this IAdapterBuilder builder, TDestination destination)
+
+		/// <summary>
+		/// Map asynchronously to destination type.
+		/// </summary>
+		/// <typeparam name="TDestination">Destination type to map.</typeparam>
+		/// <param name="builder"></param>
+		/// <param name="destination">Destination object to map.</param>
+		/// <returns>Type of destination object that mapped.</returns>
+		public static async Task<TDestination> AdaptToAsync<TDestination>(this IAdapterBuilder builder, TDestination destination)
         {
             var tasks = new List<Task>();
             builder.Parameters[ASYNC_KEY] = tasks;
@@ -67,5 +102,44 @@ namespace Mapster
             }
         }
 
+
+        /// <summary>
+        /// Map asynchronously to destination type.
+        /// </summary>
+        /// <typeparam name="TDestination">Destination type to map.</typeparam>
+        /// <param name="builder"></param>
+        /// <returns>Type of destination object that mapped.</returns>
+        public static async Task<TDestination> AdaptAsync<TDestination>(this object? source)
+        {
+            return await source.BuildAdapter().AdaptToTypeAsync<TDestination>();
+        }
+
+
+        /// <summary>
+        /// Map asynchronously to destination type.
+        /// </summary>
+        /// <typeparam name="TDestination">Destination type to map.</typeparam>
+        /// <param name="builder"></param>
+        /// <param name="config">Configuration</param>
+        /// <returns>Type of destination object that mapped.</returns>
+        public static async Task<TDestination> AdaptAsync<TDestination>(this object? source, TypeAdapterConfig config)
+        {
+            return await source.BuildAdapter(config).AdaptToTypeAsync<TDestination>();
+        }
+
+    }
+
+    public static class IMapperAsyncExtentions
+    {
+        /// <summary>
+        /// Map asynchronously to destination type.
+        /// </summary>
+        /// <typeparam name="TDestination">Destination type to map.</typeparam>
+        /// <param name="builder"></param>
+        /// <returns>Type of destination object that mapped.</returns>
+        public static async Task<TDestination> MapAsync<TDestination>(this IMapper mapper, object? source)
+        {
+            return await mapper.From(source).AdaptToTypeAsync<TDestination>();
+        }
     }
 }

@@ -44,6 +44,13 @@ namespace Mapster.Adapters
 
         protected override Expression CreateInstantiationExpression(Expression source, Expression? destination, CompileArgument arg)
         {
+            //if there is constructUsing, use constructUsing
+            var constructUsing = arg.GetConstructUsing();
+            if (constructUsing != null)
+            {
+                return base.CreateInstantiationExpression(source, destination, arg);
+            }
+
             var listType = arg.DestinationType;
             if (arg.DestinationType.GetTypeInfo().IsInterface)
             {
@@ -108,7 +115,7 @@ namespace Mapster.Adapters
             return Expression.Block(actions);
         }
 
-        protected override Expression CreateInlineExpression(Expression source, CompileArgument arg)
+        protected override Expression CreateInlineExpression(Expression source, CompileArgument arg, bool IsRequiredOnly = false)
         {
             if (arg.DestinationType.GetTypeInfo().IsAssignableFrom(source.Type.GetTypeInfo()) && 
                 (arg.Settings.ShallowCopyForSameType == true || arg.MapType == MapType.Projection))

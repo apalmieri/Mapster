@@ -7,26 +7,34 @@ using System.Runtime.CompilerServices;
 
 namespace Mapster
 {
-    public class TypeAdapterBuilder<TSource> : IAdapterBuilder<TSource>
+    public class TypeAdapterBuilder<TSource> : ITypeAdapterBuilder<TSource>
     {
         TSource Source { get; }
-        TSource IAdapterBuilder<TSource>.Source => this.Source;
+        TSource IAdapterBuilder<TSource>.Source => Source;
         TypeAdapterConfig Config { get; set; }
-        TypeAdapterConfig IAdapterBuilder.Config => this.Config;
+        TypeAdapterConfig IAdapterBuilder.Config => Config;
 
         private Dictionary<string, object>? _parameters;
         Dictionary<string, object> Parameters => _parameters ??= new Dictionary<string, object>();
-        Dictionary<string, object> IAdapterBuilder.Parameters => this.Parameters;
+        Dictionary<string, object> IAdapterBuilder.Parameters => Parameters;
         bool IAdapterBuilder.HasParameter => _parameters != null && _parameters.Count > 0;
 
         internal TypeAdapterBuilder(TSource source, TypeAdapterConfig config)
         {
-            this.Source = source;
-            this.Config = config;
+            Source = source;
+            Config = config;
         }
 
-        [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
-        public TypeAdapterBuilder<TSource> ForkConfig(Action<TypeAdapterConfig> action,
+
+		/// <summary>
+		/// Allow you to keep config and mapping inline.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <param name="key1"></param>
+		/// <param name="key2"></param>
+		/// <returns></returns>
+		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
+        public ITypeAdapterBuilder<TSource> ForkConfig(Action<TypeAdapterConfig> action,
 #if !NET40
             [CallerFilePath]
 #endif
@@ -36,13 +44,20 @@ namespace Mapster
 #endif
             int key2 = 0)
         {
-            this.Config = this.Config.Fork(action, key1, key2);
+            Config = Config.Fork(action, key1, key2);
             return this;
         }
 
-        public TypeAdapterBuilder<TSource> AddParameters(string name, object value)
+
+		/// <summary>
+		/// Passing runtime value.
+		/// </summary>
+		/// <param name="name">Parameter name.</param>
+		/// <param name="value">Parameter value</param>
+		/// <returns></returns>
+		public ITypeAdapterBuilder<TSource> AddParameters(string name, object value)
         {
-            this.Parameters.Add(name, value);
+            Parameters.Add(name, value);
             return this;
         }
 
@@ -50,7 +65,7 @@ namespace Mapster
         {
             var scope = new MapContextScope();
             var parameters = scope.Context.Parameters;
-            foreach (var kvp in this.Parameters)
+            foreach (var kvp in Parameters)
             {
                 parameters[kvp.Key] = kvp.Value;
             }
@@ -58,31 +73,49 @@ namespace Mapster
             return scope;
         }
 
-        MapContextScope IAdapterBuilder.CreateMapContextScope() => CreateMapContextScope();
 
-        public TDestination AdaptToType<TDestination>()
+        MapContextScope IAdapterBuilder.CreateMapContextScope() => CreateMapContextScope();
+		/// <summary>
+		/// Mapping to new type using in adapter builder scenario.
+		/// </summary>
+		/// <typeparam name="TDestination">Destination type to adopt.</typeparam>
+		/// <returns></returns>
+		public TDestination AdaptToType<TDestination>()
         {
             if (_parameters == null)
                 return Map<TDestination>();
 
-            using (this.CreateMapContextScope())
+            using (CreateMapContextScope())
             {
                 return Map<TDestination>();
             }
         }
 
-        private TDestination Map<TDestination>()
+
+		/// <summary>
+		/// Perform mapping to type of destination in adapter builder scenario.
+		/// </summary>
+		/// <typeparam name="TDestination">Destination type to map.</typeparam>
+		/// <returns></returns>
+		private TDestination Map<TDestination>()
         {
-            var fn = this.Config.GetMapFunction<TSource, TDestination>();
-            return fn(this.Source);
+            var fn = Config.GetMapFunction<TSource, TDestination>();
+            return fn(Source);
         }
 
-        public TDestination AdaptTo<TDestination>(TDestination destination)
+
+		/// <summary>
+		/// Mapping to existing object in adapter builder scenario.
+		/// </summary>
+		/// <typeparam name="TDestination">Destination type to adopt.</typeparam>
+		/// <param name="destination"></param>
+		/// <returns></returns>
+		public TDestination AdaptTo<TDestination>(TDestination destination)
         {
             if (_parameters == null)
                 return MapToTarget(destination);
 
-            using (this.CreateMapContextScope())
+            using (CreateMapContextScope())
             {
                 return MapToTarget(destination);
             }
@@ -90,26 +123,44 @@ namespace Mapster
 
         private TDestination MapToTarget<TDestination>(TDestination destination)
         {
-            var fn = this.Config.GetMapToTargetFunction<TSource, TDestination>();
-            return fn(this.Source, destination);
+            var fn = Config.GetMapToTargetFunction<TSource, TDestination>();
+            return fn(Source, destination);
         }
 
-        public Expression<Func<TSource, TDestination>> CreateMapExpression<TDestination>()
+
+		/// <summary>
+		/// Get mapping expression.
+		/// </summary>
+		/// <typeparam name="TDestination">Destination type to create map expression.</typeparam>
+		/// <returns></returns>
+		public Expression<Func<TSource, TDestination>> CreateMapExpression<TDestination>()
         {
             var tuple = new TypeTuple(typeof(TSource), typeof(TDestination));
-            return (Expression<Func<TSource, TDestination>>) this.Config.CreateMapExpression(tuple, MapType.Map);
+            return (Expression<Func<TSource, TDestination>>) Config.CreateMapExpression(tuple, MapType.Map);
         }
 
-        public Expression<Func<TSource, TDestination, TDestination>> CreateMapToTargetExpression<TDestination>()
+
+		/// <summary>
+		/// Get mapping to existing object expression.
+		/// </summary>
+		/// <typeparam name="TDestination">Destination type to create map to target expression.</typeparam>
+		/// <returns></returns>
+		public Expression<Func<TSource, TDestination, TDestination>> CreateMapToTargetExpression<TDestination>()
         {
             var tuple = new TypeTuple(typeof(TSource), typeof(TDestination));
-            return (Expression<Func<TSource, TDestination, TDestination>>) this.Config.CreateMapExpression(tuple, MapType.MapToTarget);
+            return (Expression<Func<TSource, TDestination, TDestination>>) Config.CreateMapExpression(tuple, MapType.MapToTarget);
         }
 
-        public Expression<Func<TSource, TDestination>> CreateProjectionExpression<TDestination>()
+
+		/// <summary>
+		/// Get mapping from queryable expression.
+		/// </summary>
+		/// <typeparam name="TDestination">Destination type to create projection expression.</typeparam>
+		/// <returns></returns>
+		public Expression<Func<TSource, TDestination>> CreateProjectionExpression<TDestination>()
         {
             var tuple = new TypeTuple(typeof(TSource), typeof(TDestination));
-            return (Expression<Func<TSource, TDestination>>) this.Config.CreateMapExpression(tuple, MapType.Projection);
+            return (Expression<Func<TSource, TDestination>>) Config.CreateMapExpression(tuple, MapType.Projection);
         }
     }
 }

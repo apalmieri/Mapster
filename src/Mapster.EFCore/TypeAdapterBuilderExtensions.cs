@@ -12,7 +12,7 @@ namespace Mapster
 {
     public static class TypeAdapterBuilderExtensions
     {
-        public static TypeAdapterBuilder<TSource> EntityFromContext<TSource>(this TypeAdapterBuilder<TSource> builder, DbContext context)
+        public static ITypeAdapterBuilder<TSource> EntityFromContext<TSource>(this ITypeAdapterBuilder<TSource> builder, DbContext context)
         {
             const string dbKey = "Mapster.EFCore.db";
             return builder
@@ -22,7 +22,15 @@ namespace Mapster
                     foreach (var entityType in context.Model.GetEntityTypes())
                     {
                         var type = entityType.ClrType;
-                        var keys = entityType.FindPrimaryKey().Properties.Select(p => p.Name).ToArray();
+
+                        var primaryKeys = entityType.FindPrimaryKey();
+
+                        if (primaryKeys == null)
+                        {
+                            continue;
+                        }
+
+                        var keys = primaryKeys.Properties.Select(p => p.Name).ToArray();
                         var settings = config.When((srcType, destType, mapType) => destType == type);
                         settings.Settings.ConstructUsingFactory = arg =>
                         {
@@ -80,7 +88,14 @@ namespace Mapster
                 }, context.GetType().FullName);
         }
 
-        public static IQueryable<TDestination> ProjectToType<TDestination>(this IAdapterBuilder<IQueryable> source)
+
+		/// <summary>
+		/// Mapping from queryable.
+		/// </summary>
+		/// <typeparam name="TDestination">Type of destination.</typeparam>
+		/// <param name="source">Source object to adopt.</param>
+		/// <returns></returns>
+		public static IQueryable<TDestination> ProjectToType<TDestination>(this IAdapterBuilder<IQueryable> source)
         {
             var queryable = source.Source.ProjectToType<TDestination>(source.Config);
             if (!source.HasParameter || source.Parameters.All(it => it.Key.StartsWith("Mapster.")))

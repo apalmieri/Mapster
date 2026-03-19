@@ -1,7 +1,9 @@
+#if NET6_0
 using Hellang.Middleware.ProblemDetails;
-using Microsoft.AspNet.OData.Extensions;
+#endif
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,26 +25,25 @@ namespace Sample.CodeGen
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(opts => opts.EnableEndpointRouting = false)
+                .AddOData(options => options.Select().Filter().OrderBy())
                 .AddNewtonsoftJson();
             services.AddDbContext<SchoolContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
             services.AddProblemDetails();
-            services.AddOData();
-            services.Scan(selector => selector.FromCallingAssembly()
+            services.Scan(selector => selector.FromAssemblyOf<Startup>()
                 .AddClasses().AsMatchingInterface().WithSingletonLifetime());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            #if NET6_0
             app.UseProblemDetails();
+            #endif
             app.UseRouting();
             app.UseAuthorization();
-            app.UseMvc(builder =>
-            {
-                builder.EnableDependencyInjection();
-                builder.Select().Expand().Filter().OrderBy().MaxTop(1000).Count();
-            });
+            app.UseMvc();
         }
     }
 }
